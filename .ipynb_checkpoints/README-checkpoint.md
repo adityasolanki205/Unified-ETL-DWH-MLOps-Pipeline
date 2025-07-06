@@ -1,9 +1,12 @@
 # Unified ETL Data warehousing MLops Pipeline
-This is one of the **ML Operations** Repository. This repository demonstrates a complete pipeline that integrates data engineering and machine learning workflows for real-time credit risk prediction.  Here we will try to learn basics of Data ingestion, Extract transform load, data Warehousing,  Machine learning model deployment and Online Prediction using **Kubeflow**. We will learn step by step how to create a this pipeline using various GCP services using [German Credit Risk](https://www.kaggle.com/uciml/german-credit). We assume, there is a data source that streams customer data and we need to predict the credit risk of the customer.The architecture spans multiple stages starting from data ingestion and ETL, through model development and deployment, and finally enabling real-time inference via online predictions. The complete process is explained in the architecture diagram given below:
+This repository is part of an **MLOps workflow**, showcasing a complete pipeline that integrates **data engineering** and **machine learning** for real-time **credit risk prediction** (assumed.
+
+You'll learn key concepts like **data ingestion**, **ETL (Extract, Transform, Load)**, **data warehousing**, **ML model deployment**, and **online prediction** using **Kubeflow** and various **GCP services**.
+
+We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-credit) and simulate a **streaming data source** that emits customer details in real time. The pipeline is designed to predict customer credit risk, covering the full lifecycle — from batch ingestion and processing, to model training, deployment, and online inference—detailed in the architecture diagram below.
 
 ![ML Ops Architecture](https://github.com/user-attachments/assets/4fb12dbd-675d-439b-bc1c-5e70dd763362)
 
-## End-to-End Pipeline Overview
 
 1. **Ingest Data from the source in batch format**
     - Export historical customer data in CSV format and store it in **Google Cloud Storage (GCS)**.
