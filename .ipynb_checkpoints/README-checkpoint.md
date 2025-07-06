@@ -9,12 +9,31 @@ This is one of the **ML Operations** Repository. This repository demonstrates a 
     - Export historical customer data in CSV format and store it in **Google Cloud Storage (GCS)**.
       
 2. **Create and run a Batch Processing Dataflow ETL Job** [1]
-3. **Push transformed data into Bigquery Table**
+    - Use **Apache Beam with Dataflow** to read, clean, and transform batch data.
+    - Ensure proper schema alignment and data quality checks
+      
+3. **Load transformed data into BigQuery**
+    - Write the cleaned and enriched data to a **BigQuery table** for downstream analytics and ML use
+      
 4. **Create and run Kubeflow pipeline** [2]
-5. **Ingest Data from a the sources in Streaming format**
+    - Develop a **Vertex AI / Kubeflow pipeline** that:
+        - Prepares features
+        - Performs Hyperparmeter Tuning
+        - Performs Model training
+        - Deploys it to a **Vertex AI Model Registry**
+        - Creates Endpoints for online Prediction
+          
+5. **Ingest streaming Data from a the sources**
+    - Enable real-time ingestion from a live customer data stream
+      
 6. **Create and Run a Streaming Pipeline** [3]
-7. **Perform Prediction using Endpoint in Dataflow job**
+    - Build a **Streaming Apache Beam pipeline** that reads, cleans and transforms input data.
+      
+7. **Perform online prediction using the deployed Vertex AI Endpoint**
+    - Send transformed data to the deployed **ML model endpoint** for inference
+      
 8. **Ingest output Data in Bigquery Table**
+    - Store the prediction results in a **BigQuery table** for monitoring, analytics, or alerting.
 
 Reference:  
 [1]: [Batch Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)  
