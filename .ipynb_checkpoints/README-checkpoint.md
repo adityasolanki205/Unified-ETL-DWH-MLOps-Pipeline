@@ -1,29 +1,16 @@
 # Unified ETL Data warehousing MLops Pipeline
 This is one of the **ML Operations** Repository. Here we will try to learn basics of Data ingestion, Extract transform load, data Warehousing and  Machine learning model deployment and Online Prediction using **Kubeflow**. We will learn step by step how to create a this pipeline using various GCP services using [German Credit Risk](https://www.kaggle.com/uciml/german-credit). The complete process is explained in the architecture diagram given below:
 
+![ML Ops Architecture](https://github.com/user-attachments/assets/4fb12dbd-675d-439b-bc1c-5e70dd763362)
 
-
-1. **Create Vertex AI workbench and Storage Bucket**
-2. **Create a Artifact registry**
-3. **Create Docker Image**
-4. **Create Pipeline**
-
-   4.a ***Ingest Data***
-
-   4.b ***Preprocess Data***
-
-   4.c ***Split Data into Training and Testing Dataset***
-
-   4.d ***HyperParametering Tuning***
-
-   4.e ***Deploy Model to Model Registry***
-
-   4.f ***Create Endpoint for Online Prediction***
-
-   4.g ***Defining the pipeline***
-   
-6. **Running the Pipeline**
-7. **Metadata Management**
+1. **Ingest Data from the source in batch format**
+2. **Create and Run a Batch Processing Dataflow ETL Job** [Batch Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)
+3. **Push transformed data into Bigquery Table**
+4. **Create and run Kubeflow pipeline** [ML Pipeline](https://github.com/adityasolanki205/ML-Pipeline-using-Kubeflow)
+5. **Ingest Data from a the sources in Streaming format**
+6. **Create and Run a Streaming Pipeline**[Streaming Pipeline](https://github.com/adityasolanki205/ML-Streaming-pipeline-using-Dataflow)
+7. **Perform Prediction using Endpoint in Dataflow job**
+8. **Ingest output Data in Bigquery Table**
 
 
 ## Motivation
