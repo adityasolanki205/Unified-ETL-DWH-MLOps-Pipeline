@@ -1,7 +1,7 @@
 # Unified ETL Data warehousing MLops Pipeline
 This is one of the **ML Operations** Repository. Here we will try to learn basics of Data ingestion, Extract transform load, data Warehousing and  Machine learning model deployment and Online Prediction using **Kubeflow**. We will learn step by step how to create a this pipeline using various GCP services using [German Credit Risk](https://www.kaggle.com/uciml/german-credit). The complete process is explained in the architecture diagram given below:
 
-
+![ML Ops Architecture](https://github.com/user-attachments/assets/4fb12dbd-675d-439b-bc1c-5e70dd763362)
 
 1. **Create Vertex AI workbench and Storage Bucket**
 2. **Create a Artifact registry**
