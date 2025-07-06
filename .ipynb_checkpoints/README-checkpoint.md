@@ -4,19 +4,19 @@ This is one of the **ML Operations** Repository. Here we will try to learn basic
 ![ML Ops Architecture](https://github.com/user-attachments/assets/4fb12dbd-675d-439b-bc1c-5e70dd763362)
 
 1. **Ingest Data from the source in batch format**
-2. **Create and run a Batch Processing Dataflow ETL Job** [^1]
+2. **Create and run a Batch Processing Dataflow ETL Job** [1]
 3. **Push transformed data into Bigquery Table**
-4. **Create and run Kubeflow pipeline** [^2]
+4. **Create and run Kubeflow pipeline** [2]
 5. **Ingest Data from a the sources in Streaming format**
-6. **Create and Run a Streaming Pipeline** [^3]
+6. **Create and Run a Streaming Pipeline** [3]
 7. **Perform Prediction using Endpoint in Dataflow job**
 8. **Ingest output Data in Bigquery Table**
 
-[^1]:: [Batch Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)
+[1]: [Batch Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)
 
-[^2]:: [ML Pipeline](https://github.com/adityasolanki205/ML-Pipeline-using-Kubeflow)
+[2]: [ML Pipeline](https://github.com/adityasolanki205/ML-Pipeline-using-Kubeflow)
 
-[^3]:: [Streaming Pipeline](https://github.com/adityasolanki205/ML-Streaming-pipeline-using-Dataflow)
+[3]: [Streaming Pipeline](https://github.com/adityasolanki205/ML-Streaming-pipeline-using-Dataflow)
 
 ## Motivation
 For the last few years, I have been part of a great learning curve wherein I have upskilled myself to move into a Machine Learning and Cloud Computing. This project was practice project for all the learnings I have had. This is first of the many more to come. 
