@@ -12,10 +12,9 @@ This is one of the **ML Operations** Repository. Here we will try to learn basic
 7. **Perform Prediction using Endpoint in Dataflow job**
 8. **Ingest output Data in Bigquery Table**
 
+Reference:
 [1]: [Batch Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)
-
 [2]: [ML Pipeline](https://github.com/adityasolanki205/ML-Pipeline-using-Kubeflow)
-
 [3]: [Streaming Pipeline](https://github.com/adityasolanki205/ML-Streaming-pipeline-using-Dataflow)
 
 ## Motivation
