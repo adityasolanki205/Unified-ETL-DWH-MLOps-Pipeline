@@ -1,9 +1,13 @@
 # Unified ETL Data warehousing MLops Pipeline
-This is one of the **ML Operations** Repository. Here we will try to learn basics of Data ingestion, Extract transform load, data Warehousing and  Machine learning model deployment and Online Prediction using **Kubeflow**. We will learn step by step how to create a this pipeline using various GCP services using [German Credit Risk](https://www.kaggle.com/uciml/german-credit). The complete process is explained in the architecture diagram given below:
+This is one of the **ML Operations** Repository. This repository demonstrates a complete pipeline that integrates data engineering and machine learning workflows for real-time credit risk prediction.  Here we will try to learn basics of Data ingestion, Extract transform load, data Warehousing,  Machine learning model deployment and Online Prediction using **Kubeflow**. We will learn step by step how to create a this pipeline using various GCP services using [German Credit Risk](https://www.kaggle.com/uciml/german-credit). We assume, there is a data source that streams customer data and we need to predict the credit risk of the customer.The architecture spans multiple stages starting from data ingestion and ETL, through model development and deployment, and finally enabling real-time inference via online predictions. The complete process is explained in the architecture diagram given below:
 
 ![ML Ops Architecture](https://github.com/user-attachments/assets/4fb12dbd-675d-439b-bc1c-5e70dd763362)
 
+## End-to-End Pipeline Overview
+
 1. **Ingest Data from the source in batch format**
+    - Export historical customer data in CSV format and store it in **Google Cloud Storage (GCS)**.
+      
 2. **Create and run a Batch Processing Dataflow ETL Job** [1]
 3. **Push transformed data into Bigquery Table**
 4. **Create and run Kubeflow pipeline** [2]
@@ -12,7 +16,7 @@ This is one of the **ML Operations** Repository. Here we will try to learn basic
 7. **Perform Prediction using Endpoint in Dataflow job**
 8. **Ingest output Data in Bigquery Table**
 
-Reference:
+Reference:  
 [1]: [Batch Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)  
 [2]: [ML Pipeline](https://github.com/adityasolanki205/ML-Pipeline-using-Kubeflow)  
 [3]: [Streaming Pipeline](https://github.com/adityasolanki205/ML-Streaming-pipeline-using-Dataflow)
