@@ -520,7 +520,17 @@ https://github.com/user-attachments/assets/5b765fcd-16e9-42e8-a9cf-2baf134e9f07
 
 ## Implementation
 To test the code we need to do the following:
-
+   
+    1. Batch running
+     python3 batch-pipeline.py \
+     --runner DataFlowRunner \
+     --project solar-dialect-264808 \
+     --temp_location gs://demo_bucket_kfl/Temp \
+     --staging_location gs://demo_bucket_kfl/Stage \
+     --input gs://demo_bucket_kfl/german_data.csv \
+     --region asia-south1 \
+     --job_name germananalysis
+     
     1. Copy the repository in Cloud SDK using below command:
        git clone https://github.com/adityasolanki205/ML_Pipeline_using_Kubeflow.git
     
