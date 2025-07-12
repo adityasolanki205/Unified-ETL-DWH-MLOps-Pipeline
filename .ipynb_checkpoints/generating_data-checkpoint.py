@@ -156,7 +156,8 @@ def generate_log():
         Job= Job,
         Liable_People=Liable_People,
         Telephone=Telephone,
-        Foreign_worker=Foreign_worker
+        Foreign_worker=Foreign_worker,
+        Classification=Classification
     )
 
     return log_line

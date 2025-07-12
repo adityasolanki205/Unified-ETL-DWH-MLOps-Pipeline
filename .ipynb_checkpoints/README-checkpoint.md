@@ -531,6 +531,23 @@ To test the code we need to do the following:
      --region asia-south1 \
      --job_name germananalysis
      
+    Python 3.11, apache-beam[gcp]==2.64.0
+    
+    python3 ml-streaming-pipeline-endpoint.py \
+      --runner DataFlowRunner \
+      --project solar-dialect-264808 \
+      --bucket_name demo_bucket_kfl \
+      --temp_location gs://demo_bucket_kfl/Temp \
+      --staging_location gs://demo_bucket_kfl/Stage \
+      --region asia-south1 \
+      --job_name ml-stream-analysis \
+      --input_subscription projects/solar-dialect-264808/subscriptions/german_credit_data-sub \
+      --input_topic projects/solar-dialect-264808/topics/german_credit_data \
+      --save_main_session \
+      --setup_file ./setup.py \
+      --minNumWorkers 1 \
+      --maxNumWorkers 4 \
+      --streaming
     1. Copy the repository in Cloud SDK using below command:
        git clone https://github.com/adityasolanki205/ML_Pipeline_using_Kubeflow.git
     
