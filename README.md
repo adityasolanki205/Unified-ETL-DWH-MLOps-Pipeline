@@ -785,11 +785,10 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
 
 https://github.com/user-attachments/assets/fb8a7cd2-2bd5-4127-8540-391058a45f8e
 
-    - ***Metadata Management***: At last we simply verify the metadata of the pipeline. The output artifacts are provided in output artifacts folder.
+- ***Metadata Management***: At last we simply verify the metadata of the pipeline. The output artifacts are provided in output artifacts folder.
 
 https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
 
-    - ***Metadata Management***: At last we simply verify the metadata of the pipeline. The output artifacts are provided in output artifacts folder.
 
 5. **Reading Data from Pub Sub**: Now we will start reading data from Pub sub to start the pipeline. The data is read using **beam.io.ReadFromPubSub()**. Here we will just read the input message by providing the TOPIC and the output is decoded which was encoded while generating the data. 
 
