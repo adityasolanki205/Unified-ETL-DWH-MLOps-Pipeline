@@ -19,7 +19,7 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
     - Write the cleaned and enriched data to a **BigQuery table** for downstream analytics and ML use
       
 4. **Create and run Kubeflow pipeline** [2]
-    - Develop a **Vertex AI / Kubeflow pipeline** that:
+    - Develop a **Vertex AI Kubeflow pipeline** that:
         - Prepares features
         - Performs Hyperparmeter Tuning
         - Performs Model training
@@ -283,7 +283,7 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
             run()
     ``` 
 
-    - **Filtering the data**: Now we will clean the data by removing all the rows having Null values from the dataset. We will use **Filter()** to return only valid rows with no Null values. Output of this step is saved in the file named Filtered_data.
+    - ***Filtering the data***: Now we will clean the data by removing all the rows having Null values from the dataset. We will use **Filter()** to return only valid rows with no Null values. Output of this step is saved in the file named Filtered_data.
 
     ```python
         ...
@@ -313,7 +313,7 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
             run()
     ```
 
-    - **Performing Type Convertion**: After Filtering we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). The output of this step is saved in Convert_datatype text file.
+    - ***Performing Type Convertion***: After Filtering we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). The output of this step is saved in Convert_datatype text file.
 
     ```python
         ... 
@@ -1152,7 +1152,7 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
             run()        
     ```
 
-10. **Delete Infrastructure (Optional)**: Please delete below mentioned services
+9. **Delete Infrastructure (Optional)**: Please delete below mentioned services
     
     - Workbench
     - Storage Bucket
