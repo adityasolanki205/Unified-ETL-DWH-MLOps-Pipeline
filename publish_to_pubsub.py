@@ -12,7 +12,7 @@ import time
 
 
 
-PROJECT_ID="trusty-field-283517"
+PROJECT_ID="solar-dialect-264808"
 TOPIC = "german_credit_data"
 
 publisher = pubsub_v1.PublisherClient()

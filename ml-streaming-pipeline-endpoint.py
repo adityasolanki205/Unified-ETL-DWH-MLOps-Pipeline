@@ -42,6 +42,7 @@ class Split(beam.DoFn):
             'Foreign_worker': str(Foreign_worker)
         }]
 def Filter_Data(data):
+    #This will remove rows the with Null values in any one of the columns
     return data['Purpose'] !=  'NULL' and len(data['Purpose']) <= 3  and  data['Property'] !=  'NULL' and data['Personal_status'] != 'NULL' and data['Existing_account'] != 'NULL' and data['Credit_amount'] != 'NULL' and data['Installment_plans'] != 'NULL'
 
 class ApplyLabelEncoding(beam.DoFn):
@@ -84,7 +85,6 @@ def Convert_Datatype(data):
     data['Number_of_credits'] = int(data['Number_of_credits']) if 'Number_of_credits' in data else None
     data['Liable_People'] = int(data['Liable_People']) if 'Liable_People' in data else None
     return data
-
 
 def call_vertex_ai(data):
      aiplatform.init(project='827249641444', location='asia-south1')
