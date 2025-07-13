@@ -1168,8 +1168,24 @@ https://github.com/user-attachments/assets/5b765fcd-16e9-42e8-a9cf-2baf134e9f07
 
 ## Implementation
 To test the code we need to do the following:
-   
-    1. Batch running
+
+    1. Copy the repository in Cloud SDK using below command:
+    git clone https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline.git
+    
+    2. Create a Storage Bucket by the name 'demo_bucket_kfl' in asia-south1 and two sub folders Temp and Stage.
+    
+    3. Copy the data file in the cloud Bucket using the below command
+    cd ML_Pipeline_using_Kubeflow
+    gsutil cp german_data.csv gs://demo_bucket_kfl/
+    
+    4. Create a Dataset in asia-east1 by the name GermanCredit
+    
+    5. Create a table in GermanCredit dataset by the name GermanCreditTable
+    
+    6. Install Apache Beam on the SDK using below command
+    pip3 install apache_beam[gcp]
+    
+    7. Command to run Batch job:
      python3 batch-pipeline.py \
      --runner DataFlowRunner \
      --project solar-dialect-264808 \
@@ -1178,9 +1194,17 @@ To test the code we need to do the following:
      --input gs://demo_bucket_kfl/german_data.csv \
      --region asia-south1 \
      --job_name germananalysis
-     
-    Python 3.11, apache-beam[gcp]==2.64.0
+
+    8. Run the file training_pipeline.ipynb/training_pipeline.py in workbench. This will create a json file.
     
+    9. Run the run_pipeline.ipynb file
+     
+    10. Verify of all the artifacts are created.
+    
+    11. The Streaming pipeline will run with below configuration only. To configure environment run commands present in update_python.ipynb
+        Python 3.11, apache-beam[gcp]==2.64.0
+
+    12. Run the pipeline using:
     python3 ml-streaming-pipeline-endpoint.py \
       --runner DataFlowRunner \
       --project solar-dialect-264808 \
@@ -1196,20 +1220,10 @@ To test the code we need to do the following:
       --minNumWorkers 1 \
       --maxNumWorkers 4 \
       --streaming
-    1. Copy the repository in Cloud SDK using below command:
-       git clone https://github.com/adityasolanki205/ML_Pipeline_using_Kubeflow.git
-    
-    2. Create a Storage Bucket by the name 'demo_bucket_kfl' in asia-south1
-    
-    3. Copy the data file in the cloud Bucket using the below command
-        cd ML_Pipeline_using_Kubeflow
-        gsutil cp german_data.csv gs://demo_bucket_kfl/
-    
-    4. Run the file training_pipeline.ipynb/training_pipeline.py. This will create a json file
-    
-    5. Run the run_pipeline.ipynb file
-     
-    6. Verify of all the artifacts are created.
+      
+    13. Open one more tab in cloud SDK and run below command 
+    cd ML-Streaming-pipeline-using-Dataflow
+    python3 publish_to_pubsub.py
 
 ## Credits
 1. Akash Nimare's [README.md](https://gist.github.com/akashnimare/7b065c12d9750578de8e705fb4771d2f#file-readme-md)
