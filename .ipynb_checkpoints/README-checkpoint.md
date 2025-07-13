@@ -147,269 +147,269 @@ https://github.com/user-attachments/assets/76903e65-c08c-46f9-b86b-34de96268290
 
 https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
 
+5. **Generating Streaming Data**: We need to generate streaming data that can be published to Pub Sub. Then those messages will be picked to be processed by the pipeline. To generate data we will use **random()** library to create input messages. Using the generating_data.py we will be able to generate random data in the required format. This generated data will be published to Pub/Sub using publish_to_pubsub.py. Here we will use PublisherClient object, add the path to the topic using the topic_path method and call the publish_to_pubsub() function while passing the topic_path and data.
+
+```python
+    import random
+
+    LINE ="""   {Existing_account} 
+                {Duration_month} 
+                {Credit_history} 
+                {Purpose} 
+                {Credit_amount} 
+                .....
+                {Foreign_worker}"""
+
+    def generate_log():
+        existing_account = ['B11','A12','C14',
+                            'D11','E11','A14',
+                            'G12','F12','A11',
+                            'H11','I11',
+                            'J14','K14','L11',
+                            'A13'
+                           ]
+        Existing_account = random.choice(existing_account)
+    
+        duration_month = []
+        for i  in range(6, 90 , 3):
+            duration_month.append(i)
+        Duration_month = random.choice(duration_month)
+        ....
+        Foreign_worker = ['A201',
+                        'A202']
+        Foreign_worker = random.choice(foreign_worker)
+        log_line = LINE.format(
+            Existing_account=Existing_account,
+            Duration_month=Duration_month,
+            Credit_history=Credit_history,
+            Purpose=Purpose,
+            ...
+            Foreign_worker=Foreign_worker
+        )
+
+        return log_line
+
+```
+
 ## Pipeline construction
 
-1. a) **Reading the Data**: Now we will go step by step to create a pipeline starting with reading the data. The data is read using **beam.io.ReadFromText()**. Here we will just read the input values and save it in a file. The output is stored in text file named simpleoutput.
+1. **Reading the Data**: Now we will go step by step to create a pipeline starting with reading the data. The data is read using **beam.io.ReadFromText()**. Here we will just read the input values and save it in a file. The output is stored in text file named simpleoutput.
 
-```python
-    def run(argv=None, save_main_session=True):
-        parser = argparse.ArgumentParser()
-        parser.add_argument(
-          '--input',
-          dest='input',
-          help='Input file to process')
-        parser.add_argument(
-          '--output',
-          dest='output',
-          default='../output/result.txt',
-          help='Output file to write results to.')
-        known_args, pipeline_args = parser.parse_known_args(argv)
-        options = PipelineOptions(pipeline_args)
-        with beam.Pipeline(options=PipelineOptions()) as p:
-            data = (p 
-                    | 'Read Data' >> beam.io.ReadFromText(known_args.input)
-                    | 'Filter Header' >> beam.Filter(lambda line: not line.startswith("Existing account"))
-                ) 
-    if __name__ == '__main__':
-        run()
-``` 
+    ```python
+        def run(argv=None, save_main_session=True):
+            parser = argparse.ArgumentParser()
+            parser.add_argument(
+              '--input',
+              dest='input',
+              help='Input file to process')
+            parser.add_argument(
+              '--output',
+              dest='output',
+              default='../output/result.txt',
+              help='Output file to write results to.')
+            known_args, pipeline_args = parser.parse_known_args(argv)
+            options = PipelineOptions(pipeline_args)
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                data = (p 
+                        | 'Read Data' >> beam.io.ReadFromText(known_args.input)
+                        | 'Filter Header' >> beam.Filter(lambda line: not line.startswith("Existing account"))
+                    ) 
+        if __name__ == '__main__':
+            run()
+    ``` 
 
-1. b) **Parsing the data**: After reading the input file we will split the data using split(). Data is segregated into different columns to be used in further steps. We will **ParDo()** to create a split function. The output of this step is present in SplitPardo text file.
+2. **Create Batch Dataflow Job**: Now the we will be constructing the Dataflow job what will pull the data from GCS bucket and injest into Bigquery. The code for is it persent [here](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/batch-pipeline.py)
+   
+    - ***Parsing the data***: After reading the input file we will split the data using split(). Data is segregated into different columns to be used in further steps. We will **ParDo()** to create a split function. The output of this step is present in SplitPardo text file.
 
-```python
-    class Split(beam.DoFn):
-        #This Function Splits the Dataset into a dictionary
-        def process(self, element): 
-            Existing_account,
-            Duration_month,
-            Credit_history,
-            Purpose,
-            Credit_amount,
-            Saving,
-            Employment_duration,
-            Installment_rate,
-            Personal_status,
-            Debtors,
-            Residential_Duration,
-            Property,
-            Age,
-            Installment_plans,
-            Housing,
-            Number_of_credits
-            Job,
-            Liable_People,
-            Telephone,
-            Foreign_worker,
-            Classification = element.split(' ')
-         return [{
-            'Existing_account': str(Existing_account),
-            'Duration_month': int(Duration_month),
-            'Credit_history': str(Credit_history),
-            'Purpose': str(Purpose),
-            'Credit_amount': int(Credit_amount),
-            'Saving': str(Saving),
-            'Employment_duration':str(Employment_duration),
-            'Installment_rate': int(Installment_rate),
-            'Personal_status': str(Personal_status),
-            'Debtors': str(Debtors),
-            'Residential_Duration': int(Residential_Duration),
-            'Property': str(Property),
-            'Age': int(Age),
-            'Installment_plans':str(Installment_plans),
-            'Housing': str(Housing),
-            'Number_of_credits': int(Number_of_credits),
-            'Job': str(Job),
-            'Liable_People': int(Liable_People),
-            'Telephone': str(Telephone),
-            'Foreign_worker': str(Foreign_worker),
-            'Classification': int(Classification)
-        }]
-    def run(argv=None, save_main_session=True):
-        ...
-        with beam.Pipeline(options=PipelineOptions()) as p:
-            data = (p 
-                     | beam.io.ReadFromText(known_args.input) )
-            parsed_data = (data 
-                     | 'Parsing Data' >> beam.ParDo(Split())
-                     | 'Writing output' >> beam.io.WriteToText(known_args.output))
-
-    if __name__ == '__main__':
-        run()
-``` 
-
-1. c) **Filtering the data**: Now we will clean the data by removing all the rows having Null values from the dataset. We will use **Filter()** to return only valid rows with no Null values. Output of this step is saved in the file named Filtered_data.
-
-```python
-    ...
-    def Filter_Data(data):
-    #This will remove rows the with Null values in any one of the columns
-        return data['Purpose'] !=  'NULL' 
-        and len(data['Purpose']) <= 3  
-        and data['Classification'] !=  'NULL' 
-        and data['Property'] !=  'NULL' 
-        and data['Personal_status'] != 'NULL' 
-        and data['Existing_account'] != 'NULL' 
-        and data['Credit_amount'] != 'NULL' 
-        and data['Installment_plans'] != 'NULL'
-    ...
-    def run(argv=None, save_main_session=True):
-        ...
-        with beam.Pipeline(options=PipelineOptions()) as p:
-            data = (p 
-                     | beam.io.ReadFromText(known_args.input) )
-            parsed_data = (data 
-                     | 'Parsing Data' >> beam.ParDo(Split()))
-            filtered_data = (parsed_data
-                     | 'Filtering Data' >> beam.Filter(Filter_Data)          
-                     | 'Writing output' >> beam.io.WriteToText(known_args.output))
-
-    if __name__ == '__main__':
-        run()
-```
-
-7. **Performing Type Convertion**: After Filtering we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). The output of this step is saved in Convert_datatype text file.
-
-```python
-    ... 
-    def Convert_Datatype(data):
-        #This will convert the datatype of columns from String to integers or Float values
-        data['Duration_month'] = int(data['Duration_month']) if 'Duration_month' in data else None
-        data['Credit_amount'] = float(data['Credit_amount']) if 'Credit_amount' in data else None
-        data['Installment_rate'] = int(data['Installment_rate']) if 'Installment_rate' in data else None
-        data['Residential_Duration'] = int(data['Residential_Duration']) if 'Residential_Duration' in data else None
-        data['Age'] = int(data['Age']) if 'Age' in data else None
-        data['Number_of_credits'] = int(data['Number_of_credits']) if 'Number_of_credits' in data else None
-        data['Liable_People'] = int(data['Liable_People']) if 'Liable_People' in data else None
-        data['Classification'] =  int(data['Classification']) if 'Classification' in data else None
-       
-        return data
-    ...
-    def run(argv=None, save_main_session=True):
-        ...
-        with beam.Pipeline(options=PipelineOptions()) as p:
-            data = (p 
-                     | beam.io.ReadFromText(known_args.input) )
-            parsed_data = (data 
-                     | 'Parsing Data' >> beam.ParDo(Split()))
-            filtered_data = (parsed_data
-                     | 'Filtering Data' >> beam.Filter(Filter_Data))
-            Converted_data = (filtered_data
-                     | 'Convert Datatypes' >> beam.Map(Convert_Datatype)
-                     | 'Writing output' >> beam.io.WriteToText(known_args.output))
-
-    if __name__ == '__main__':
-        run()
-```
-
-8. **Inserting Data in Bigquery**: Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
-
-```python
-    import apache_beam as beam
-    from apache_beam.options.pipeline_options import PipelineOptions
-    import argparse
+    ```python
+        class Split(beam.DoFn):
+            #This Function Splits the Dataset into a dictionary
+            def process(self, element): 
+                Existing_account,
+                Duration_month,
+                Credit_history,
+                Purpose,
+                Credit_amount,
+                Saving,
+                Employment_duration,
+                Installment_rate,
+                Personal_status,
+                Debtors,
+                Residential_Duration,
+                Property,
+                Age,
+                Installment_plans,
+                Housing,
+                Number_of_credits
+                Job,
+                Liable_People,
+                Telephone,
+                Foreign_worker,
+                Classification = element.split(' ')
+             return [{
+                'Existing_account': str(Existing_account),
+                'Duration_month': int(Duration_month),
+                'Credit_history': str(Credit_history),
+                'Purpose': str(Purpose),
+                'Credit_amount': int(Credit_amount),
+                'Saving': str(Saving),
+                'Employment_duration':str(Employment_duration),
+                'Installment_rate': int(Installment_rate),
+                'Personal_status': str(Personal_status),
+                'Debtors': str(Debtors),
+                'Residential_Duration': int(Residential_Duration),
+                'Property': str(Property),
+                'Age': int(Age),
+                'Installment_plans':str(Installment_plans),
+                'Housing': str(Housing),
+                'Number_of_credits': int(Number_of_credits),
+                'Job': str(Job),
+                'Liable_People': int(Liable_People),
+                'Telephone': str(Telephone),
+                'Foreign_worker': str(Foreign_worker),
+                'Classification': int(Classification)
+            }]
+        def run(argv=None, save_main_session=True):
+            ...
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                data = (p 
+                         | beam.io.ReadFromText(known_args.input) )
+                parsed_data = (data 
+                         | 'Parsing Data' >> beam.ParDo(Split())
+                         | 'Writing output' >> beam.io.WriteToText(known_args.output))
     
-    SCHEMA = '
-            Existing_account:STRING,
-            Duration_month:INTEGER,
-            Credit_history:STRING,
-            Purpose:STRING,
-            Credit_amount:FLOAT,
-            Saving:STRING,
-            Employment_duration:STRING,
-            Installment_rate:INTEGER,
-            Personal_status:STRING,
-            Debtors:STRING,
-            Residential_Duration:INTEGER,
-            Property:STRING,
-            Age:INTEGER,
-            Installment_plans:STRING,
-            Housing:STRING,
-            Number_of_credits:INTEGER,
-            Job:STRING,
-            Liable_People:INTEGER,
-            Telephone:STRING,
-            Foreign_worker:STRING,
-            Classification:INTEGER
-            '
-    ...
-    def run(argv=None, save_main_session=True):
+        if __name__ == '__main__':
+            run()
+    ``` 
+
+    - **Filtering the data**: Now we will clean the data by removing all the rows having Null values from the dataset. We will use **Filter()** to return only valid rows with no Null values. Output of this step is saved in the file named Filtered_data.
+
+    ```python
         ...
-        parser.add_argument(
-          '--project',
-          dest='project',
-          help='Project used for this Pipeline')
+        def Filter_Data(data):
+        #This will remove rows the with Null values in any one of the columns
+            return data['Purpose'] !=  'NULL' 
+            and len(data['Purpose']) <= 3  
+            and data['Classification'] !=  'NULL' 
+            and data['Property'] !=  'NULL' 
+            and data['Personal_status'] != 'NULL' 
+            and data['Existing_account'] != 'NULL' 
+            and data['Credit_amount'] != 'NULL' 
+            and data['Installment_plans'] != 'NULL'
         ...
-        PROJECT_ID = known_args.project
-        with beam.Pipeline(options=PipelineOptions()) as p:
-            data = (p 
-                    | 'Read Data' >> beam.io.ReadFromText(known_args.input)
-                    | 'Filter Header' >> beam.Filter(lambda line: not line.startswith("Existing account"))
-                )
-        parsed_data = (data 
-                     | 'Parsing Data' >> beam.ParDo(Split()))
-        filtered_data = (parsed_data
-                     | 'Filtering Data' >> beam.Filter(Filter_Data))
-        Cleaned_data = (filtered_data
-                     | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
-        output =( Cleaned_data      
-                     | 'Writing to bigquery' >> beam.io.WriteToBigQuery(
-                       '{0}:GermanCredit.GermanCreditTable'.format(PROJECT_ID),
-                       schema=SCHEMA,
-                       write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
+        def run(argv=None, save_main_session=True):
+            ...
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                data = (p 
+                         | beam.io.ReadFromText(known_args.input) )
+                parsed_data = (data 
+                         | 'Parsing Data' >> beam.ParDo(Split()))
+                filtered_data = (parsed_data
+                         | 'Filtering Data' >> beam.Filter(Filter_Data)          
+                         | 'Writing output' >> beam.io.WriteToText(known_args.output))
+    
+        if __name__ == '__main__':
+            run()
+    ```
 
-    if __name__ == '__main__':
-        run()        
-```
+    - **Performing Type Convertion**: After Filtering we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). The output of this step is saved in Convert_datatype text file.
 
-9. **Creating the Docker Image**: After creating the repository we will create the docker Image for Kubeflow Components. This will also install all the required libraries:
+    ```python
+        ... 
+        def Convert_Datatype(data):
+            #This will convert the datatype of columns from String to integers or Float values
+            data['Duration_month'] = int(data['Duration_month']) if 'Duration_month' in data else None
+            data['Credit_amount'] = float(data['Credit_amount']) if 'Credit_amount' in data else None
+            data['Installment_rate'] = int(data['Installment_rate']) if 'Installment_rate' in data else None
+            data['Residential_Duration'] = int(data['Residential_Duration']) if 'Residential_Duration' in data else None
+            data['Age'] = int(data['Age']) if 'Age' in data else None
+            data['Number_of_credits'] = int(data['Number_of_credits']) if 'Number_of_credits' in data else None
+            data['Liable_People'] = int(data['Liable_People']) if 'Liable_People' in data else None
+            data['Classification'] =  int(data['Classification']) if 'Classification' in data else None
+           
+            return data
+        ...
+        def run(argv=None, save_main_session=True):
+            ...
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                data = (p 
+                         | beam.io.ReadFromText(known_args.input) )
+                parsed_data = (data 
+                         | 'Parsing Data' >> beam.ParDo(Split()))
+                filtered_data = (parsed_data
+                         | 'Filtering Data' >> beam.Filter(Filter_Data))
+                Converted_data = (filtered_data
+                         | 'Convert Datatypes' >> beam.Map(Convert_Datatype)
+                         | 'Writing output' >> beam.io.WriteToText(known_args.output))
+    
+        if __name__ == '__main__':
+            run()
+    ```
 
-   - To create this image we go back to workbench.
-   - Now we run the docker_build. This file contains all the commands to create the image. It also contains requirements.txt file to install all the dependancies.
-     
-    requirements.txt
-    ```text
-        pandas
-        numpy
-        scikit-learn
-        joblib
-        Cython
-        hyperopt
-        kfp
-        db-dtypes
+3. **Inserting Data in Bigquery**: Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
+
+    ```python
+        import apache_beam as beam
+        from apache_beam.options.pipeline_options import PipelineOptions
+        import argparse
         
-        # Google Cloud libraries
-        google-cloud-aiplatform
-        google-cloud-storage
-        google-cloud-pubsub
-        google-cloud-bigquery
-        google-cloud-bigquery-storage
-        googleapis-common-protos
+        SCHEMA = '
+                Existing_account:STRING,
+                Duration_month:INTEGER,
+                Credit_history:STRING,
+                Purpose:STRING,
+                Credit_amount:FLOAT,
+                Saving:STRING,
+                Employment_duration:STRING,
+                Installment_rate:INTEGER,
+                Personal_status:STRING,
+                Debtors:STRING,
+                Residential_Duration:INTEGER,
+                Property:STRING,
+                Age:INTEGER,
+                Installment_plans:STRING,
+                Housing:STRING,
+                Number_of_credits:INTEGER,
+                Job:STRING,
+                Liable_People:INTEGER,
+                Telephone:STRING,
+                Foreign_worker:STRING,
+                Classification:INTEGER
+                '
+        ...
+        def run(argv=None, save_main_session=True):
+            ...
+            parser.add_argument(
+              '--project',
+              dest='project',
+              help='Project used for this Pipeline')
+            ...
+            PROJECT_ID = known_args.project
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                data = (p 
+                        | 'Read Data' >> beam.io.ReadFromText(known_args.input)
+                        | 'Filter Header' >> beam.Filter(lambda line: not line.startswith("Existing account"))
+                    )
+            parsed_data = (data 
+                         | 'Parsing Data' >> beam.ParDo(Split()))
+            filtered_data = (parsed_data
+                         | 'Filtering Data' >> beam.Filter(Filter_Data))
+            Cleaned_data = (filtered_data
+                         | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
+            output =( Cleaned_data      
+                         | 'Writing to bigquery' >> beam.io.WriteToBigQuery(
+                           '{0}:GermanCredit.GermanCreditTable'.format(PROJECT_ID),
+                           schema=SCHEMA,
+                           write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
+    
+        if __name__ == '__main__':
+            run()        
     ```
 
-    docker_build.sh
-    ```bash
-        FROM gcr.io/deeplearning-platform-release/base-cpu
-        
-        WORKDIR /
-        COPY training_pipeline.py /
-        COPY requirements.txt /
-        COPY ./src/ /src
-        RUN pip install --upgrade pip && pip install -r requirements.txt
-    ```
-    - To create the image, we run the command below
+4. **Create Kubeflow Pipeline**: Now the real pipeline creating starts. Here will we will try to create pipeline components one by one. File to be used is training_pipeline.ipynb
 
-    ```bash
-       bash docker_build.sh
-    ```
-
-
-https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
-
-
-
-6. **Create Pipeline**: Now the real pipeline creating starts. Here will we will try to create pipeline components one by one. File to be used is training_pipeline.ipynb
-
-   - ***Ingest Data*** : First step in the pipeline is Data ingestion. Here we simply read the data german_data.csv from our bucket. This method expect 2 arguments, one is input_data_path coming from input arguments of the python job and second is the output_dataset path to copy file output path
+    - ***Ingest Data*** : First step in the pipeline is Data ingestion. Here we simply read the data german_data.csv from our bucket. This method expect 2 arguments, one is input_data_path coming from input arguments of the python job and second is the output_dataset path to copy file output path
 
     ```python
         import yaml
@@ -429,13 +429,21 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
         import os
         @component(
             base_image="asia-south1-docker.pkg.dev/solar-dialect-264808/kubeflow-pipelines/demo_model"
-        )
-        def data_ingestion(input_data_path: str, input_data: Output[Dataset],):
+            )
+        def data_ingestion(input_data_path: str,
+                           project_id: str,
+                           region: str, 
+                           input_data: Output[Dataset],):
             import pandas as pd
             from datetime import datetime, timedelta
             from google.cloud import bigquery
             import logging
-            df = pd.read_csv(input_data_path)
+            client = bigquery.Client(project=project_id, location=region)
+            sql = """
+            SELECT *
+            FROM `{}.GermanCredit.GermanCreditTable`
+            """.format(project_id)
+            df = client.query_and_wait(sql).to_dataframe()
             df.to_csv(input_data.path, index=False)
     ```
     
@@ -446,26 +454,46 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
             base_image="asia-south1-docker.pkg.dev/solar-dialect-264808/kubeflow-pipelines/demo_model"
         )
         
-        def preprocessing(train_df: Input[Dataset], input_data_preprocessed: Output[Dataset]):
+        def preprocessing(train_df: Input[Dataset],
+                  gcs_bucket: str,
+                  input_data_preprocessed: Output[Dataset]):
             import pandas as pd
             import numpy as np
-            import logging
-            import numpy as np
-            import pandas as pd
-            import matplotlib.pyplot as plt
-            import seaborn as sns
-            import warnings
-            from sklearn.preprocessing import StandardScaler
-            from sklearn.preprocessing import MinMaxScaler, StandardScaler
-            from sklearn.preprocessing import LabelEncoder
+            import os
+            import joblib
+            from sklearn.preprocessing import MinMaxScaler, LabelEncoder
+            from google.cloud import storage
+        
+            # --- CONFIG ---
+            GCS_ENCODER_FOLDER = "label_encoders"
+            LOCAL_ENCODER_DIR = "/encoders"
+            os.makedirs(LOCAL_ENCODER_DIR, exist_ok=True)
+        
+            def upload_encoder_to_gcs(local_path, gcs_path):
+                client = storage.Client()
+                bucket = client.bucket(gcs_bucket)
+                blob = bucket.blob(gcs_path)
+                blob.upload_from_filename(local_path)
+                print(f"Uploaded {local_path} to gs://{gcs_bucket}/{gcs_path}")
         
             def encode_columns(df, columns):
                 encoders = {}
                 for column in columns:
                     le = LabelEncoder()
                     df[column] = le.fit_transform(df[column])
-                    encoders[column] = dict(zip(le.transform(le.classes_), le.classes_))
+                    encoders[column] = le
+        
+                    # Save encoder
+                    local_file = f"{LOCAL_ENCODER_DIR}/{column}_label_encoder.pkl"
+                    joblib.dump(le, local_file)
+        
+                    # Upload to GCS
+                    upload_encoder_to_gcs(
+                        local_file,
+                        f"{GCS_ENCODER_FOLDER}/{column}_label_encoder.pkl"
+                    )
                 return df
+        
             def preprocess(df):
                 numeric_columns = df.describe().columns
                 df_log_transformed = df.copy()
@@ -474,13 +502,14 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
                 df_scaled_log_transformed = df_log_transformed.copy()
                 df_scaled_log_transformed[numeric_columns] = scaler.fit_transform(df_scaled_log_transformed[numeric_columns])
                 categorical_columns = [
-                'Existing account', 'Credit history', 'Purpose', 'Saving',
-                'Employment duration', 'Personal status', 'Debtors', 'Property',
-                'Installment plans', 'Housing', 'Job', 'Telephone', 'Foreign worker'
+                    'Existing_account', 'Credit_history', 'Purpose', 'Saving',
+                    'Employment_duration', 'Personal_status', 'Debtors', 'Property',
+                    'Installment_plans', 'Housing', 'Job', 'Telephone', 'Foreign_worker'
                 ]
                 df_scaled_log_transformed = encode_columns(df_scaled_log_transformed, categorical_columns)
                 return df_scaled_log_transformed
         
+            # Load, preprocess, save output
             df = pd.read_csv(train_df.path)
             df = preprocess(df)
             df.to_csv(input_data_preprocessed.path, index=False)
@@ -532,6 +561,7 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
             X_train.to_csv(dataset_train.path, index=False)
             X_test.to_csv(dataset_test.path, index=False)
     ```
+    
     - ***HyperParametering Tuning***: Fourth step in the pipeline is perform hyperparameter tuning. Here we try to find the optimal settings for its parameters to improve model performance. We try to find best parameters for Logistic regression. 
 
     ```python
@@ -696,6 +726,7 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
             region: str = "asia-south1",
             model_name: str = "demo_model",
             target: str = "Classification",
+            gcs_bucket: str = "demo_bucket_kfl",
             max_evals: int = 30,
             use_hyperparameter_tuning: bool = True,
             serving_container_image_uri: str = "asia-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-5:latest"
@@ -704,7 +735,7 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
                 input_data_path=input_data_path)
             data_op.set_caching_options(False)
         
-            data_preprocess_op = preprocessing(train_df=data_op.outputs["input_data"])
+            data_preprocess_op = preprocessing(train_df=data_op.outputs["input_data"], gcs_bucket=gcs_bucket)
             data_preprocess_op.set_caching_options(False)
             train_test_split_op = train_test_data_split(
                 dataset_in=data_preprocess_op.outputs["input_data_preprocessed"],
@@ -737,29 +768,389 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
             compiler.Compiler().compile(pipeline_func=pipeline, package_path="training_pipeline.json")
     ```
     
-7. **Running the Pipeline**: Now we simply have to run the pipeline. 
+    - ***Running the Pipeline***: Now we simply have to run the pipeline. 
 
-```python
-    from google.cloud.aiplatform import PipelineJob
-    
-    pipeline_job = PipelineJob(
-        display_name="training_pipeline_job",
-        template_path="training_pipeline.json",
-        pipeline_root="gs://demo_bucket_kfl/pipeline_root_demo",
-        project="solar-dialect-264808",
-        location="asia-south1",
-        )
-    pipeline_job.run()
-```
+    ```python
+        from google.cloud.aiplatform import PipelineJob
+        
+        pipeline_job = PipelineJob(
+            display_name="training_pipeline_job",
+            template_path="training_pipeline.json",
+            pipeline_root="gs://demo_bucket_kfl/pipeline_root_demo",
+            project="solar-dialect-264808",
+            location="asia-south1",
+            )
+        pipeline_job.run()
+    ```
 
 https://github.com/user-attachments/assets/fb8a7cd2-2bd5-4127-8540-391058a45f8e
 
-
-8. **Metadata Management**: At last we simply verify the metadata of the pipeline. The output artifacts are provided in output artifacts folder.
-
+    - ***Metadata Management***: At last we simply verify the metadata of the pipeline. The output artifacts are provided in output artifacts folder.
 
 https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
 
+    - ***Metadata Management***: At last we simply verify the metadata of the pipeline. The output artifacts are provided in output artifacts folder.
+
+5. **Reading Data from Pub Sub**: Now we will start reading data from Pub sub to start the pipeline. The data is read using **beam.io.ReadFromPubSub()**. Here we will just read the input message by providing the TOPIC and the output is decoded which was encoded while generating the data. 
+
+    ```python
+        def run(argv=None, save_main_session=True):
+            parser = argparse.ArgumentParser()
+            parser.add_argument(
+                '--project',
+                dest='project',
+                help='Project used for this Pipeline')
+            parser.add_argument(
+                '--bucket_name', 
+                required=True, 
+                help='The name of the bucket')
+            parser.add_argument(
+                '--input_subscription',
+                help=('Input PubSub subscription of the form '
+                      '"projects/<PROJECT>/subscriptions/<SUBSCRIPTION>."'))
+            parser.add_argument(
+                '--input_topic',
+                help=('Input PubSub topic of the form '
+                      '"projects/<PROJECT>/topics/<TOPIC>".'))
+            known_args, pipeline_args = parser.parse_known_args(argv)
+            options = PipelineOptions(pipeline_args)
+            PROJECT_ID = known_args.project
+            TOPIC = known_args.input_topic
+            SUBSCRIPTION = known_args.input_subscription
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                Encoded_data   = (p 
+                               | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
+                Data           = ( Encoded_data
+                              | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
+                                       ) 
+                if __name__ == '__main__':
+                    run()
+    ```
+    
+6. **Create Streaming Dataflow Job**: Now the we will be constructing the Dataflow job what will pull the data from Pub/sub , perform ETL and pull inference from Vertex AI endpoint and injest into Bigquery. The code for is it persent [here](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/ml-streaming-pipeline-endpoint.py)
+
+    - **Parsing the data**: After reading the input from Pub-Sub we will split the data using split(). Data is segregated into different columns to be used in further steps. We will **ParDo()** to create a split function.
+
+    ```python
+        class Split(beam.DoFn):
+            #This Function Splits the Dataset into a dictionary
+            def process(self, element): 
+                Existing_account,
+                Duration_month,
+                Credit_history,
+                Purpose,
+                Credit_amount,
+                Saving,
+                Employment_duration,
+                Installment_rate,
+                Personal_status,
+                Debtors,
+                Residential_Duration,
+                Property,
+                Age,
+                Installment_plans,
+                Housing,
+                Number_of_credits
+                Job,
+                Liable_People,
+                Telephone,
+                Foreign_worker= element.split(' ')
+            return [{
+               'Existing_account': str(Existing_account),
+                'Duration_month': int(Duration_month),
+                'Credit_history': str(Credit_history),
+                'Purpose': str(Purpose),
+                'Credit_amount': int(Credit_amount),
+                'Saving': str(Saving),
+                'Employment_duration':str(Employment_duration),
+                'Installment_rate': int(Installment_rate),
+                'Personal_status': str(Personal_status),
+                'Debtors': str(Debtors),
+                'Residential_Duration': int(Residential_Duration),
+                'Property': str(Property),
+                'Age': int(Age),
+                'Installment_plans':str(Installment_plans),
+                'Housing': str(Housing),
+                'Number_of_credits': int(Number_of_credits),
+                'Job': str(Job),
+                'Liable_People': int(Liable_People),
+                'Telephone': str(Telephone),
+                'Foreign_worker': str(Foreign_worker)
+            }]
+        def run(argv=None, save_main_session=True):
+            ...
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                Encoded_data   = (p 
+                       | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
+                Data           = ( Encoded_data
+                              | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
+                Parsed_data    = (Data 
+                               | 'Parsing Data' >> beam.ParDo(Split()))
+                                | 'Writing output' >> beam.io.WriteToText(known_args.output)
+                               )
+    
+        if __name__ == '__main__':
+            run()
+    ```
+    - **Filtering Data**: After dattype coversion we will filter the unrequired data .
+     
+    ```python
+        def Filter_Data(data):
+            return data['Purpose'] !=  'NULL' and 
+                    len(data['Purpose']) <= 3  and  
+                    data['Property'] !=  'NULL' and 
+                    data['Personal_status'] != 'NULL' and 
+                    data['Existing_account'] != 'NULL' and 
+                    data['Credit_amount'] != 'NULL' and 
+                    data['Installment_plans'] != 'NULL'
+        ...
+        def run(argv=None, save_main_session=True):
+            ...
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                 encoded_data = ( p 
+                                | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) 
+                                )
+                        data =  ( encoded_data
+                                | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') 
+                                ) 
+                  parsed_data = ( data 
+                                | 'Parsing Data' >> beam.ParDo(Split())
+                                )
+                   filtered_data = (Parsed_data
+                                 | 'Filtering Data' >> beam.Filter(Filter_Data))
+                                | 'Writing output' >> beam.io.WriteToText(known_args.output))
+    
+        if __name__ == '__main__':
+            run()
+    ```
+    
+    - **Lable Encoding Data**: After datatype coversion we will label encode the data to make it machine learning worthy .
+     
+    ```python
+        class ApplyLabelEncoding(beam.DoFn):
+            def __init__(self, bucket_name, encoder_folder, columns_to_encode):
+                self.bucket_name = bucket_name
+                self.encoder_folder = encoder_folder
+                self.columns_to_encode = columns_to_encode
+                self.encoders = {}
+        
+            def setup(self):
+                # Load encoders only once per worker
+                from google.cloud import storage
+                import tempfile
+        
+                client = storage.Client()
+                bucket = client.bucket(self.bucket_name)
+        
+                for column in self.columns_to_encode:
+                    blob_path = f"{self.encoder_folder}/{column}_label_encoder.pkl"
+                    blob = bucket.blob(blob_path)
+        
+                    with tempfile.NamedTemporaryFile() as f:
+                        blob.download_to_filename(f.name)
+                        self.encoders[column] = joblib.load(f.name)
+        
+            def process(self, element):
+                for col in self.columns_to_encode:
+                    if col in element and element[col] in self.encoders[col].classes_:
+                        element[col] = int(self.encoders[col].transform([element[col]])[0])
+                    else:
+                        element[col] = -1  # Unknown or unseen value
+                yield element
+        ...
+        def run(argv=None, save_main_session=True):
+            ...
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                 encoded_data = ( p 
+                                | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) 
+                                )
+                        data =  ( encoded_data
+                                | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') 
+                                ) 
+                    parsed_data = ( data 
+                                | 'Parsing Data' >> beam.ParDo(Split())
+                                )
+                    filtered_data = (Parsed_data
+                                 | 'Filtering Data' >> beam.Filter(Filter_Data)))
+                    Encoded_data = (filtered_data 
+                                | 'Label Encoding' >> beam.ParDo(ApplyLabelEncoding(
+                                    bucket_name=known_args.bucket_name,
+                                    encoder_folder="label_encoders",
+                                    columns_to_encode=categorical_columns
+                                ))
+                                | 'Writing output' >> beam.io.WriteToText(known_args.output))
+    
+        if __name__ == '__main__':
+            run()
+    ```
+
+    - **Performing Type Convertion**: After parsing we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). 
+
+    ```python
+        ... 
+        def Convert_Datatype(data):
+            #This will convert the datatype of columns from String to integers or Float values
+            data['Duration_month'] = int(data['Duration_month']) if 'Duration_month' in data else None
+            data['Credit_amount'] = float(data['Credit_amount']) if 'Credit_amount' in data else None
+            data['Installment_rate'] = int(data['Installment_rate']) if 'Installment_rate' in data else None
+            data['Residential_Duration'] = int(data['Residential_Duration']) if 'Residential_Duration' in data else None
+            data['Age'] = int(data['Age']) if 'Age' in data else None
+            data['Number_of_credits'] = int(data['Number_of_credits']) if 'Number_of_credits' in data else None
+            data['Liable_People'] = int(data['Liable_People']) if 'Liable_People' in data else None
+            return data
+        ...
+        def run(argv=None, save_main_session=True):
+            ...
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                 encoded_data = ( p 
+                                | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) 
+                                )
+                        data =  ( encoded_data
+                                | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') 
+                                ) 
+                   parsed_data = ( data 
+                                | 'Parsing Data' >> beam.ParDo(Split())
+                                )
+                   filtered_data = (Parsed_data
+                                 | 'Filtering Data' >> beam.Filter(Filter_Data)))
+                    Encoded_data = (filtered_data 
+                                | 'Label Encoding' >> beam.ParDo(ApplyLabelEncoding(
+                                    bucket_name=known_args.bucket_name,
+                                    encoder_folder="label_encoders",
+                                    columns_to_encode=categorical_columns
+                                ))
+                   Converted_data = ( Encoded_data
+                                    | 'Convert Datatypes' >> beam.Map(Convert_Datatype)
+                                    | 'Writing output' >> beam.io.WriteToText(known_args.output))
+    
+        if __name__ == '__main__':
+            run()
+    ```
+    
+7. **Predicting Customer segments**: Now we will perform predictions from the machine learning model. If you wish to learn how this machine learning model was created, please visit this [repository](https://github.com/adityasolanki205/German-Credit). We will predict customer segment using endpoint created by Kubeflow.
+
+    ```python
+        ... 
+        def call_vertex_ai(data):
+             aiplatform.init(project='827249641444', location='asia-south1')
+             endpoints = aiplatform.Endpoint.list()
+             # Display endpoint info
+             for endpoint in endpoints:
+                 print(f"Resource Name: {endpoint.resource_name}")
+                 endpoint_created = endpoint.resource_name
+           
+             feature_order = ['Existing_account', 'Duration_month', 'Credit_history', 'Purpose',
+                          'Credit_amount', 'Saving', 'Employment_duration', 'Installment_rate',
+                          'Personal_status', 'Debtors', 'Residential_Duration', 'Property', 'Age',
+                          'Installment_plans', 'Housing', 'Number_of_credits', 'Job', 
+                          'Liable_People', 'Telephone', 'Foreign_worker']
+             endpoint = aiplatform.Endpoint(endpoint_name=endpoint_created)
+             features = [data[feature] for feature in feature_order]
+             response = endpoint.predict(
+                 instances=[features]
+             )
+           
+             prediction = response.predictions[0]
+             data['Classification'] = int(prediction)
+             return data
+        ...
+        def run(argv=None, save_main_session=True):
+            ...
+            with beam.Pipeline(options=PipelineOptions()) as p:
+               Encoded_data   = (p 
+                       | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
+                Data           = ( Encoded_data
+                              | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
+                Parsed_data    = (Data 
+                               | 'Parsing Data' >> beam.ParDo(Split()))
+                filtered_data = (Parsed_data
+                             | 'Filtering Data' >> beam.Filter(Filter_Data))
+                Encoded_data = (filtered_data 
+                            | 'Label Encoding' >> beam.ParDo(ApplyLabelEncoding(
+                                bucket_name=known_args.bucket_name,
+                                encoder_folder="label_encoders",
+                                columns_to_encode=categorical_columns
+                            ))
+                        )
+                Converted_data = (Encoded_data
+                               | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
+                Prediction   = (Converted_data
+                                |'Get Inference' >> beam.Map(call_vertex_ai))
+                                 | 'Saving the output' >> beam.io.WriteToText(known_args.output))
+        if __name__ == '__main__':
+            run()
+    ```
+
+8. **Inserting Data in Bigquery**: Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
+
+    ```python
+        import apache_beam as beam
+        from apache_beam.options.pipeline_options import PipelineOptions
+        import argparse
+        
+        SCHEMA =
+        '
+        Existing_account:STRING,
+        Duration_month:INTEGER,
+        Credit_history:STRING,
+        Purpose:STRING,
+        Credit_amount:FLOAT,
+        Saving:STRING,
+        Employment_duration:STRING,
+        Installment_rate:INTEGER,
+        Personal_status:STRING,
+        Debtors:STRING,
+        Residential_Duration:INTEGER,
+        Property:STRING,
+        Age:INTEGER,
+        Installment_plans:STRING,
+        Housing:STRING,
+        Number_of_credits:INTEGER,
+        Job:STRING,
+        Liable_People:INTEGER,
+        Telephone:STRING,
+        Foreign_worker:STRING,
+        Classification:INTEGER
+        '
+        ...
+        def run(argv=None, save_main_session=True):
+            ...
+            parser.add_argument(
+              '--project',
+              dest='project',
+              help='Project used for this Pipeline')
+            ...
+            PROJECT_ID = known_args.project
+            with beam.Pipeline(options=PipelineOptions()) as p:
+                Encoded_data   = (p 
+                           | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
+                Data           = ( Encoded_data
+                              | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
+                Parsed_data    = (Data 
+                               | 'Parsing Data' >> beam.ParDo(Split()))
+                filtered_data = (Parsed_data
+                             | 'Filtering Data' >> beam.Filter(Filter_Data))
+                Encoded_data = (filtered_data 
+                            | 'Label Encoding' >> beam.ParDo(ApplyLabelEncoding(
+                                bucket_name=known_args.bucket_name,
+                                encoder_folder="label_encoders",
+                                columns_to_encode=categorical_columns
+                            ))
+                        )
+                Converted_data = (Encoded_data
+                               | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
+                Prediction   = (Converted_data
+                                |'Get Inference' >> beam.Map(call_vertex_ai))
+                output         = ( Prediction      
+                               | 'Writing to bigquery' >> beam.io.WriteToBigQuery(
+                               '{0}:GermanCredit.GermanCreditTable'.format(PROJECT_ID),
+                               schema=SCHEMA,
+                               write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
+                              )
+    
+        if __name__ == '__main__':
+            run()        
+    ```
 
 10. **Delete Infrastructure (Optional)**: Please delete below mentioned services
     
