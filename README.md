@@ -407,6 +407,9 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
             run()        
     ```
 
+https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
+
+
 4. **Create Kubeflow Pipeline**: Now the real pipeline creating starts. Here will we will try to create pipeline components one by one. File to be used is training_pipeline.ipynb
 
     - ***Ingest Data*** : First step in the pipeline is Data ingestion. Here we simply read the data german_data.csv from our bucket. This method expect 2 arguments, one is input_data_path coming from input arguments of the python job and second is the output_dataset path to copy file output path
