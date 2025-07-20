@@ -1187,14 +1187,16 @@ To test the code we need to do the following:
     
     4. Create a Dataset in asia-east1 by the name GermanCredit
     
-    5. Create a table in GermanCredit dataset by the name GermanCreditTable
+    5. Create a table in GermanCredit dataset by the name GermanCreditTable. Schema is present at the starting of batch-pipeline.py
 
-    6. Create Pub Sub Topic by the name german_credit_data
+    6.  Create a table in GermanCredit dataset by the name GermanCreditTable-streaming. Schema is present at the starting of ml-streaming-pipeline-endpoint.py
+
+    7. Create Pub Sub Topic by the name german_credit_data
     
-    7. Install Apache Beam on the SDK using below command
+    8. Install Apache Beam on the SDK using below command
     pip3 install apache_beam[gcp]
     
-    8. Command to run Batch job:
+    9. Command to run Batch job:
      python3 batch-pipeline.py \
      --runner DataFlowRunner \
      --project solar-dialect-264808 \
@@ -1204,16 +1206,16 @@ To test the code we need to do the following:
      --region asia-south1 \
      --job_name germananalysis
 
-    9. Run the file training_pipeline.ipynb/training_pipeline.py in workbench. This will create a json file.
+    10. Run the file training_pipeline.ipynb/training_pipeline.py in workbench. This will create a json file.
     
-    10. Run the run_pipeline.ipynb file
+    11. Run the run_pipeline.ipynb file
      
-    11. Verify of all the artifacts are created.
+    12. Verify of all the artifacts are created.
     
-    12. The Streaming pipeline will run with below configuration only. To configure environment run commands present in update_python.ipynb
+    13. The Streaming pipeline will run with below configuration only. To configure environment run commands present in update_python.ipynb
         Python 3.11, apache-beam[gcp]==2.64.0
 
-    13. Run the pipeline using:
+    14. Run the pipeline using:
     python3 ml-streaming-pipeline-endpoint.py \
       --runner DataFlowRunner \
       --project solar-dialect-264808 \
@@ -1230,7 +1232,7 @@ To test the code we need to do the following:
       --maxNumWorkers 4 \
       --streaming
       
-    14. Open one more tab in cloud SDK and run below command 
+    15. Open one more tab in cloud SDK and run below command 
     cd ML-Streaming-pipeline-using-Dataflow
     python3 publish_to_pubsub.py
 
