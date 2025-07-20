@@ -5,7 +5,7 @@ You'll learn key concepts like **data ingestion**, **ETL (Extract, Transform, Lo
 
 We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-credit) and simulate a **streaming data source** that emits customer details in real time. The pipeline is designed to predict customer credit risk, covering the full lifecycle — from batch ingestion and processing, to model training, deployment, and online inference—detailed in the architecture diagram below.
 
-![ML Ops Architecture Updated](https://github.com/user-attachments/assets/6f794f82-06c1-45a6-b930-1837c87c2089)
+![ML Ops Architecture Updated](https://github.com/user-attachments/assets/5cfd2d6d-64d8-46f9-b2ec-365b9630661c)
 
 
 1. **Ingest Data from the source in batch format**
