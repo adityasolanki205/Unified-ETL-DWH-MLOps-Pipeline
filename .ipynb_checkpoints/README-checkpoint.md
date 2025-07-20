@@ -5,7 +5,7 @@ You'll learn key concepts like **data ingestion**, **ETL (Extract, Transform, Lo
 
 We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-credit) and simulate a **streaming data source** that emits customer details in real time. The pipeline is designed to predict customer credit risk, covering the full lifecycle — from batch ingestion and processing, to model training, deployment, and online inference—detailed in the architecture diagram below.
 
-![ML Ops Architecture](https://github.com/user-attachments/assets/4fb12dbd-675d-439b-bc1c-5e70dd763362)
+![ML Ops Architecture Updated](https://github.com/user-attachments/assets/2e96a735-1091-4d3c-aada-1dbb5096c7fc)
 
 
 1. **Ingest Data from the source in batch format**
@@ -37,6 +37,24 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
       
 8. **Ingest output Data in Bigquery Table**
     - Store the prediction results in a **BigQuery table** for monitoring, analytics, or alerting.
+
+9. **Monitor model predictions for drift or anomalies**
+
+    - Analyze the prediction results stored in BigQuery for signs of data drift, class imbalance, or concept drift.
+
+10. **Trigger Cloud Logging alert on threshold breach**
+
+    - When drift or anomaly is detected, log a structured message to **Cloud Logging**.
+    
+11. **Create a log-based alert**
+
+    - Threshold breach is logged to **Pub Sub**.
+   
+    - The alert triggers a Cloud Run service that orchestrates automated responses which is listening to specific pattern.
+   
+13. **Initiate automated retraining via Cloud Run Functions**
+
+    - The **Cloud Run functions** starts the Vertex AI Pipeline to retrain the model.
 
 Reference:  
 [1]: [Batch Dataflow Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)  
@@ -406,6 +424,9 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
         if __name__ == '__main__':
             run()        
     ```
+
+https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
+
 
 4. **Create Kubeflow Pipeline**: Now the real pipeline creating starts. Here will we will try to create pipeline components one by one. File to be used is training_pipeline.ipynb
 
@@ -1151,6 +1172,10 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
             run()        
     ```
 
+
+https://github.com/user-attachments/assets/949eb305-1f9f-44bc-b010-7b9811e9c51f
+
+
 9. **Delete Infrastructure (Optional)**: Please delete below mentioned services
     
     - Workbench
@@ -1180,12 +1205,18 @@ To test the code we need to do the following:
     
     4. Create a Dataset in asia-east1 by the name GermanCredit
     
-    5. Create a table in GermanCredit dataset by the name GermanCreditTable
+    5. Create a table in GermanCredit dataset by the name GermanCreditTable. 
+        Schema is present at the starting of batch-pipeline.py
+
+    6. Create a table in GermanCredit dataset by the name GermanCreditTable-streaming. 
+        Schema is present at the starting of ml-streaming-pipeline-endpoint.py
+
+    7. Create Pub Sub Topic by the name german_credit_data
     
-    6. Install Apache Beam on the SDK using below command
+    8. Install Apache Beam on the SDK using below command
     pip3 install apache_beam[gcp]
     
-    7. Command to run Batch job:
+    9. Command to run Batch job:
      python3 batch-pipeline.py \
      --runner DataFlowRunner \
      --project solar-dialect-264808 \
@@ -1195,16 +1226,16 @@ To test the code we need to do the following:
      --region asia-south1 \
      --job_name germananalysis
 
-    8. Run the file training_pipeline.ipynb/training_pipeline.py in workbench. This will create a json file.
+    10. Run the file training_pipeline.ipynb/training_pipeline.py in workbench. This will create a json file.
     
-    9. Run the run_pipeline.ipynb file
+    11. Run the run_pipeline.ipynb file
      
-    10. Verify of all the artifacts are created.
+    12. Verify of all the artifacts are created.
     
-    11. The Streaming pipeline will run with below configuration only. To configure environment run commands present in update_python.ipynb
+    13. The Streaming pipeline will run with below configuration only. To configure environment run commands present in update_python.ipynb
         Python 3.11, apache-beam[gcp]==2.64.0
 
-    12. Run the pipeline using:
+    14. Run the pipeline using:
     python3 ml-streaming-pipeline-endpoint.py \
       --runner DataFlowRunner \
       --project solar-dialect-264808 \
@@ -1221,7 +1252,7 @@ To test the code we need to do the following:
       --maxNumWorkers 4 \
       --streaming
       
-    13. Open one more tab in cloud SDK and run below command 
+    15. Open one more tab in cloud SDK and run below command 
     cd ML-Streaming-pipeline-using-Dataflow
     python3 publish_to_pubsub.py
 

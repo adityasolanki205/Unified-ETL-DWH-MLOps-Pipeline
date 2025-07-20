@@ -38,6 +38,24 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
 8. **Ingest output Data in Bigquery Table**
     - Store the prediction results in a **BigQuery table** for monitoring, analytics, or alerting.
 
+9. **Monitor model predictions for drift or anomalies**
+
+    - Analyze the prediction results stored in BigQuery for signs of data drift, class imbalance, or concept drift.
+
+10. **Trigger Cloud Logging alert on threshold breach**
+
+    - When drift or anomaly is detected, log a structured message to **Cloud Logging**.
+    
+11. **Create a log-based alert**
+
+    - Threshold breach is logged to **Pub Sub**.
+   
+    - The alert triggers a Cloud Run service that orchestrates automated responses which is listening to specific pattern.
+   
+13. **Initiate automated retraining via Cloud Run Functions**
+
+    - The **Cloud Run functions** starts the Vertex AI Pipeline to retrain the model.
+
 Reference:  
 [1]: [Batch Dataflow Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)  
 [2]: [Kubeflow Pipeline](https://github.com/adityasolanki205/ML-Pipeline-using-Kubeflow)  

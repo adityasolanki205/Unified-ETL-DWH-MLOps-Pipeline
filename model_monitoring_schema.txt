@@ -95,7 +95,6 @@
       "dataType": "integer",
       "repeated": false
     },
-	,
 	{
       "name": "Foreign_worker",
       "dataType": "integer",
