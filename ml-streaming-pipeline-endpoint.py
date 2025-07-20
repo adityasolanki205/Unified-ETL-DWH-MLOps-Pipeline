@@ -12,8 +12,10 @@ import joblib
 import pickle
 import json
 from google.cloud import aiplatform
+from datetime import datetime
+import pytz
 
-SCHEMA='Existing_account:STRING,Duration_month:INTEGER,Credit_history:STRING,Purpose:STRING,Credit_amount:FLOAT,Saving:STRING,Employment_duration:STRING,Installment_rate:INTEGER,Personal_status:STRING,Debtors:STRING,Residential_Duration:INTEGER,Property:STRING,Age:INTEGER,Installment_plans:STRING,Housing:STRING,Number_of_credits:INTEGER,Job:STRING,Liable_People:INTEGER,Telephone:STRING,Foreign_worker:STRING,Classification:INTEGER'
+SCHEMA='Existing_account:STRING,Duration_month:INTEGER,Credit_history:STRING,Purpose:STRING,Credit_amount:FLOAT,Saving:STRING,Employment_duration:STRING,Installment_rate:INTEGER,Personal_status:STRING,Debtors:STRING,Residential_Duration:INTEGER,Property:STRING,Age:INTEGER,Installment_plans:STRING,Housing:STRING,Number_of_credits:INTEGER,Job:STRING,Liable_People:INTEGER,Telephone:STRING,Foreign_worker:STRING,Classification:INTEGER,datetime:TIMESTAMP'
 
 class Split(beam.DoFn):
     #This Function Splits the Dataset into a dictionary
@@ -74,6 +76,12 @@ class ApplyLabelEncoding(beam.DoFn):
                 element[col] = int(self.encoders[col].transform([element[col]])[0])
             else:
                 element[col] = -1  # Unknown or unseen value
+        yield element
+class AddTimestamp(beam.DoFn):
+    def process(self, element):
+        ist = pytz.timezone('Asia/Kolkata')
+        now_ist = datetime.now(ist)
+        element['datetime'] = now_ist.isoformat()
         yield element
 def Convert_Datatype(data):
     #This will convert the datatype of columns from String to integers or Float values
@@ -157,9 +165,13 @@ def run(argv=None, save_main_session=True):
                        | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
         Prediction   = (Converted_data
                         |'Get Inference' >> beam.Map(call_vertex_ai))
-        output         = ( Prediction      
+        WithTimestamp = (
+            Prediction
+            | 'Add Timestamp' >> beam.ParDo(AddTimestamp())
+        )
+        output         = ( WithTimestamp      
                        | 'Writing to bigquery' >> beam.io.WriteToBigQuery(
-                       '{0}:GermanCredit.GermanCreditTable'.format(PROJECT_ID),
+                       '{0}:GermanCredit.GermanCreditTable-streaming'.format(PROJECT_ID),
                        schema=SCHEMA,
                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
                       )

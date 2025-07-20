@@ -1,0 +1,114 @@
+{
+  "featureFields": [
+    {
+      "name": "Existing_account",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Duration_month",
+      "dataType": "integer",
+      "repeated": false
+    },
+	{
+      "name": "Credit_history",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Purpose",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Credit_amount",
+      "dataType": "float",
+      "repeated": false
+    },
+	{
+      "name": "Saving",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Employment_duration",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Installment_rate",
+      "dataType": "integer",
+      "repeated": false
+    },
+	{
+      "name": "Personal_status",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Debtors",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Residential_Duration",
+      "dataType": "integer",
+      "repeated": false
+    },
+	{
+      "name": "Property",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Age",
+      "dataType": "integer",
+      "repeated": false
+    },
+	{
+      "name": "Installment_plans",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Housing",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Number_of_credits",
+      "dataType": "integer",
+      "repeated": false
+    },
+	{
+      "name": "Job",
+      "dataType": "string",
+      "repeated": false
+    },
+	{
+      "name": "Liable_People",
+      "dataType": "integer",
+      "repeated": false
+    },
+	{
+      "name": "Telephone",
+      "dataType": "integer",
+      "repeated": false
+    },
+	,
+	{
+      "name": "Foreign_worker",
+      "dataType": "integer",
+      "repeated": false
+    }
+	
+  ],
+  "predictionFields": [
+	{
+	  "name": "Classification",
+	  "dataType": "integer",
+	  "repeated": false
+	}
+  ],
+  "groundTruthFields": []
+}
