@@ -1187,9 +1187,11 @@ To test the code we need to do the following:
     
     4. Create a Dataset in asia-east1 by the name GermanCredit
     
-    5. Create a table in GermanCredit dataset by the name GermanCreditTable. Schema is present at the starting of batch-pipeline.py
+    5. Create a table in GermanCredit dataset by the name GermanCreditTable. 
+        Schema is present at the starting of batch-pipeline.py
 
-    6.  Create a table in GermanCredit dataset by the name GermanCreditTable-streaming. Schema is present at the starting of ml-streaming-pipeline-endpoint.py
+    6. Create a table in GermanCredit dataset by the name GermanCreditTable-streaming. 
+        Schema is present at the starting of ml-streaming-pipeline-endpoint.py
 
     7. Create Pub Sub Topic by the name german_credit_data
     
