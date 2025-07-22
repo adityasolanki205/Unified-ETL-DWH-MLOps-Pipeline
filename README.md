@@ -1248,8 +1248,7 @@ To test the code we need to do the following:
       --input_topic projects/solar-dialect-264808/topics/german_credit_data \
       --save_main_session \
       --setup_file ./setup.py \
-      --minNumWorkers 1 \
-      --maxNumWorkers 4 \
+      --max_num_workers 1 \
       --streaming
       
     15. Open one more tab in cloud SDK and run below command 
