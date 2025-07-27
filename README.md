@@ -1182,6 +1182,12 @@ https://github.com/user-attachments/assets/b5ca4e5a-d826-4089-a6b4-ddb0e43a1913
 
 
 
+
+
+https://github.com/user-attachments/assets/9910e724-92e2-4950-86a0-0e2bd6de07e1
+
+
+
 9. **Delete Infrastructure (Optional)**: Please delete below mentioned services
     
     - Workbench
