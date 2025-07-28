@@ -367,7 +367,9 @@ Now the we will be constructing the Dataflow job what will pull the data from GC
             run()
     ```
 
-4. **Inserting Data in Bigquery**: Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
+### 4. **Inserting Data in Bigquery**
+
+Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
 
     ```python
         import apache_beam as beam
@@ -430,9 +432,11 @@ Now the we will be constructing the Dataflow job what will pull the data from GC
 https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
 
 
-4. **Create Kubeflow Pipeline**: Now the real pipeline creating starts. Here will we will try to create pipeline components one by one. File to be used is training_pipeline.ipynb
+### 4. **Create Kubeflow Pipeline**
 
-    - ***Ingest Data*** : First step in the pipeline is Data ingestion. Here we simply read the data german_data.csv from our bucket. This method expect 2 arguments, one is input_data_path coming from input arguments of the python job and second is the output_dataset path to copy file output path
+Now the real pipeline creating starts. Here will we will try to create pipeline components one by one. File to be used is training_pipeline.ipynb
+
+- ***Ingest Data*** : First step in the pipeline is Data ingestion. Here we simply read the data german_data.csv from our bucket. This method expect 2 arguments, one is input_data_path coming from input arguments of the python job and second is the output_dataset path to copy file output path
 
     ```python
         import yaml
@@ -470,7 +474,7 @@ https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
             df.to_csv(input_data.path, index=False)
     ```
     
-    - ***Preprocess Data***: Second step in the pipeline is preprocess the data. Here we simply clean the data provided in output of previous step. This method expect 2 arguments, one is training_df coming from previous output of the python job and second is the output_dataset path to copy preprocessed file. Here we first convert reduce skewness in the data using logarithmic transform. Then we perform MinMAxscaling. At the end we perform label encoding to categorical columns. Then we write output data to output path.  
+- ***Preprocess Data***: Second step in the pipeline is preprocess the data. Here we simply clean the data provided in output of previous step. This method expect 2 arguments, one is training_df coming from previous output of the python job and second is the output_dataset path to copy preprocessed file. Here we first convert reduce skewness in the data using logarithmic transform. Then we perform MinMAxscaling. At the end we perform label encoding to categorical columns. Then we write output data to output path.  
 
     ```python  
         @component(
@@ -538,7 +542,7 @@ https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
             df.to_csv(input_data_preprocessed.path, index=False)
     ```
     
-    - ***Split Data into Training and Testing Dataset***: Third step in the pipeline is split data into training and test datasets. We split the datasets train and test and save them to output paths. This methods has 5 arguments, one for dataset input from previous steps, label, output train and test dataset paths and test size. 
+- ***Split Data into Training and Testing Dataset***: Third step in the pipeline is split data into training and test datasets. We split the datasets train and test and save them to output paths. This methods has 5 arguments, one for dataset input from previous steps, label, output train and test dataset paths and test size. 
       
     ```python
         @component(
@@ -585,7 +589,7 @@ https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
             X_test.to_csv(dataset_test.path, index=False)
     ```
     
-    - ***HyperParametering Tuning***: Fourth step in the pipeline is perform hyperparameter tuning. Here we try to find the optimal settings for its parameters to improve model performance. We try to find best parameters for Logistic regression. 
+- ***HyperParametering Tuning***: Fourth step in the pipeline is perform hyperparameter tuning. Here we try to find the optimal settings for its parameters to improve model performance. We try to find best parameters for Logistic regression. 
 
     ```python
         @component(
@@ -656,7 +660,7 @@ https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
                 json.dump(best_params, f)
     ```
     
-    - ***Deploy Model to Model Registry***: Fifth step in the pipeline is deploy the model to Model Registry. This will help us use the model for online prediction. Here we either deploy latest version of the model or a new model depending if the model is already existing. Here we have 6 arguments in the method, starting with project, region coming from input arguments, ml_model created in previous step, model_name to be deployed in, serving container image to be used to deploy the code, and model_uri to be used to create the Endpoint in next step.
+- ***Deploy Model to Model Registry***: Fifth step in the pipeline is deploy the model to Model Registry. This will help us use the model for online prediction. Here we either deploy latest version of the model or a new model depending if the model is already existing. Here we have 6 arguments in the method, starting with project, region coming from input arguments, ml_model created in previous step, model_name to be deployed in, serving container image to be used to deploy the code, and model_uri to be used to create the Endpoint in next step.
 
     ```python
         @component(
@@ -706,7 +710,7 @@ https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
                 f.write(model.resource_name)
     ```
     
-    - ***Create Endpoint for Online Prediction***: In the sixth step we simply create an endpoint to be used for online prediction. This method has project, region, model_name and model_uri as input arguments.
+- ***Create Endpoint for Online Prediction***: In the sixth step we simply create an endpoint to be used for online prediction. This method has project, region, model_name and model_uri as input arguments.
 
     ```python
         @component(
@@ -739,7 +743,7 @@ https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
         
     ```
     
-    - ***Defining the pipeline***: At last we define the pipeline components.
+- ***Defining the pipeline***: At last we define the pipeline components.
       
     ```python
         @dsl.pipeline(name="Training Pipeline", pipeline_root="gs://demo_bucket_kfl/pipeline_root_demo")
@@ -791,7 +795,7 @@ https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
             compiler.Compiler().compile(pipeline_func=pipeline, package_path="training_pipeline.json")
     ```
     
-    - ***Running the Pipeline***: Now we simply have to run the pipeline. 
+- ***Running the Pipeline***: Now we simply have to run the pipeline. 
 
     ```python
         from google.cloud.aiplatform import PipelineJob
@@ -813,7 +817,9 @@ https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
 https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
 
 
-5. **Reading Data from Pub Sub**: Now we will start reading data from Pub sub to start the pipeline. The data is read using **beam.io.ReadFromPubSub()**. Here we will just read the input message by providing the TOPIC and the output is decoded which was encoded while generating the data. 
+### 5. **Reading Data from Pub Sub**
+
+Now we will start reading data from Pub sub to start the pipeline. The data is read using **beam.io.ReadFromPubSub()**. Here we will just read the input message by providing the TOPIC and the output is decoded which was encoded while generating the data. 
 
     ```python
         def run(argv=None, save_main_session=True):
@@ -849,9 +855,11 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
                     run()
     ```
     
-6. **Create Streaming Dataflow Job**: Now the we will be constructing the Dataflow job what will pull the data from Pub/sub , perform ETL and pull inference from Vertex AI endpoint and injest into Bigquery. The code for is it persent [here](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/ml-streaming-pipeline-endpoint.py)
+### 7. **Create Streaming Dataflow Job**
 
-    - **Parsing the data**: After reading the input from Pub-Sub we will split the data using split(). Data is segregated into different columns to be used in further steps. We will **ParDo()** to create a split function.
+Now the we will be constructing the Dataflow job what will pull the data from Pub/sub , perform ETL and pull inference from Vertex AI endpoint and injest into Bigquery. The code for is it persent [here](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/ml-streaming-pipeline-endpoint.py)
+
+- **Parsing the data**: After reading the input from Pub-Sub we will split the data using split(). Data is segregated into different columns to be used in further steps. We will **ParDo()** to create a split function.
 
     ```python
         class Split(beam.DoFn):
@@ -914,7 +922,7 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
         if __name__ == '__main__':
             run()
     ```
-    - **Filtering Data**: After dattype coversion we will filter the unrequired data .
+- **Filtering Data**: After dattype coversion we will filter the unrequired data .
      
     ```python
         def Filter_Data(data):
@@ -946,7 +954,7 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
             run()
     ```
     
-    - **Lable Encoding Data**: After datatype coversion we will label encode the data to make it machine learning worthy .
+- **Lable Encoding Data**: After datatype coversion we will label encode the data to make it machine learning worthy .
      
     ```python
         class ApplyLabelEncoding(beam.DoFn):
@@ -1006,7 +1014,7 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
             run()
     ```
 
-    - **Performing Type Convertion**: After parsing we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). 
+- **Performing Type Convertion**: After parsing we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). 
 
     ```python
         ... 
@@ -1049,7 +1057,9 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
             run()
     ```
     
-7. **Online Prediction using Vertex AI Endpoint**: Now we will perform predictions from the machine learning model. If you wish to learn how this machine learning model was created, please visit this [repository](https://github.com/adityasolanki205/German-Credit). We will predict customer segment using endpoint created in Kubeflow.
+### 8. **Online Prediction using Vertex AI Endpoint**
+
+Now we will perform predictions from the machine learning model. If you wish to learn how this machine learning model was created, please visit this [repository](https://github.com/adityasolanki205/German-Credit). We will predict customer segment using endpoint created in Kubeflow.
 
     ```python
         ... 
@@ -1103,7 +1113,9 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
             run()
     ```
 
-8. **Inserting Data in Bigquery**: Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
+### 9. **Inserting Data in Bigquery**
+
+Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
 
     ```python
         import apache_beam as beam
@@ -1177,15 +1189,21 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
 
 https://github.com/user-attachments/assets/949eb305-1f9f-44bc-b010-7b9811e9c51f
 
-9. **Model Monitoring using Vertex AI**: To monitor prediction quality and detect drift in real-time, we use **Vertex AI Model Monitoring** on the deployed endpoint. This helps detect output drift or performance degradation based on predictions stored in **BigQuery**. The monitoring is configured to observe distribution changes over time.
+### 10. **Model Monitoring using Vertex AI**
+
+To monitor prediction quality and detect drift in real-time, we use **Vertex AI Model Monitoring** on the deployed endpoint. This helps detect output drift or performance degradation based on predictions stored in **BigQuery**. The monitoring is configured to observe distribution changes over time.
 
 https://github.com/user-attachments/assets/b5ca4e5a-d826-4089-a6b4-ddb0e43a1913
 
-10. **Triggering Cloud Alerts on Threshold Breach**: Vertex AI Model Monitoring is connected to **Cloud Monitoring**, which is set up with custom alert policies. When thresholds for prediction drift are breached, **Cloud Alerting** triggers an incident, sending a message to a **Pub/Sub** topic for further automated action like retraining.
+### 11. **Triggering Cloud Alerts on Threshold Breach**
+
+Vertex AI Model Monitoring is connected to **Cloud Monitoring**, which is set up with custom alert policies. When thresholds for prediction drift are breached, **Cloud Alerting** triggers an incident, sending a message to a **Pub/Sub** topic for further automated action like retraining.
 
 https://github.com/user-attachments/assets/9910e724-92e2-4950-86a0-0e2bd6de07e1
 
-11. **Handling Alerts using Cloud Run Functions**: The **Pub/Sub** message is consumed by a **Cloud Run Function**, which initiates the retraining pipeline using **Vertex AI Pipelines**. The retraining is triggered based on the message received from the alert system.
+### 12. **Handling Alerts using Cloud Run Functions**
+
+The **Pub/Sub** message is consumed by a **Cloud Run Function**, which initiates the retraining pipeline using **Vertex AI Pipelines**. The retraining is triggered based on the message received from the alert system.
    
       ```python
         import base64
@@ -1222,14 +1240,17 @@ https://github.com/user-attachments/assets/9910e724-92e2-4950-86a0-0e2bd6de07e1
             pipeline_job.run()
       ```
 
-12. **Automated Model Retraining via Cloud Run Functions**: In this final step, **Cloud Run Functions** initiate a new training job by triggering the same or a different pipeline. This step closes the feedback loop, enabling **end-to-end automation of model monitoring and retraining** to maintain model accuracy over time.
+### 13. **Automated Model Retraining via Cloud Run Functions**
 
+In this final step, **Cloud Run Functions** initiate a new training job by triggering the same or a different pipeline. This step closes the feedback loop, enabling **end-to-end automation of model monitoring and retraining** to maintain model accuracy over time.
 
 
 https://github.com/user-attachments/assets/e7e26fc3-ac67-4dfa-b0a3-bcba3069d17b
 
 
-13. **Delete Infrastructure (Optional)**: Please delete below mentioned services
+### 14. **Delete Infrastructure (Optional)**
+
+Please delete below mentioned services
     
     - Workbench
     - Storage Bucket
