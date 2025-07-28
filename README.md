@@ -240,7 +240,7 @@ Now we will go step by step to create a pipeline starting with reading the data.
 
 Now the we will be constructing the Dataflow job what will pull the data from GCS bucket and injest into Bigquery. The code for is it persent [here](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/batch-pipeline.py)
    
-    - ***Parsing the data***: After reading the input file we will split the data using split(). Data is segregated into different columns to be used in further steps. We will **ParDo()** to create a split function. The output of this step is present in SplitPardo text file.
+- ***Parsing the data***: After reading the input file we will split the data using split(). Data is segregated into different columns to be used in further steps. We will **ParDo()** to create a split function. The output of this step is present in SplitPardo text file.
 
     ```python
         class Split(beam.DoFn):
@@ -303,7 +303,7 @@ Now the we will be constructing the Dataflow job what will pull the data from GC
             run()
     ``` 
 
-    - ***Filtering the data***: Now we will clean the data by removing all the rows having Null values from the dataset. We will use **Filter()** to return only valid rows with no Null values. Output of this step is saved in the file named Filtered_data.
+- ***Filtering the data***: Now we will clean the data by removing all the rows having Null values from the dataset. We will use **Filter()** to return only valid rows with no Null values. Output of this step is saved in the file named Filtered_data.
 
     ```python
         ...
@@ -333,7 +333,7 @@ Now the we will be constructing the Dataflow job what will pull the data from GC
             run()
     ```
 
-    - ***Performing Type Convertion***: After Filtering we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). The output of this step is saved in Convert_datatype text file.
+- ***Performing Type Convertion***: After Filtering we will convert the datatype of numeric columns from String to Int or Float datatype. Here we will use **Map()** to apply the Convert_Datatype(). The output of this step is saved in Convert_datatype text file.
 
     ```python
         ... 
