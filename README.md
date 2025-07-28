@@ -39,22 +39,17 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
     - Store the prediction results in a **BigQuery table** for monitoring, analytics, or alerting.
 
 9. **Monitor model predictions for drift or anomalies**
-
     - Analyze the prediction results stored in BigQuery for signs of data drift, class imbalance, or concept drift.
 
-10. **Trigger Cloud Logging alert on threshold breach**
-
-    - When drift or anomaly is detected, log a structured message to **Cloud Logging**.
+10. **Trigger Cloud Alert on threshold breach**
+    - When drift or anomaly is detected, create a alerting policy in **Cloud Alerting**.
     
 11. **Create a log-based alert**
-
-    - Threshold breach is logged to **Pub Sub**.
-   
-    - The alert triggers a Cloud Run service that orchestrates automated responses which is listening to specific pattern.
+    - Threshold breach in **Cloud Alerting** triggers an incident and a message to **Pub Sub**.
+    - The Message in **Pub sub** initiates a **Cloud Run Functions** service that start retraining pipeline.
    
 13. **Initiate automated retraining via Cloud Run Functions**
-
-    - The **Cloud Run functions** starts the Vertex AI Pipeline to retrain the model.
+    - The **Cloud Run Functions** starts the Vertex AI Pipeline to retrain the model.
 
 Reference:  
 [1]: [Batch Dataflow Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)  
@@ -78,6 +73,9 @@ For the last few years, I have been part of a great learning curve wherein I hav
 - [Vertex AI Model Registry](https://cloud.google.com/vertex-ai/docs/model-registry/introduction)
 - [Vertex AI Online Prediction](https://cloud.google.com/vertex-ai/docs/predictions/get-predictions)
 - [Vertex AI Metadata](https://cloud.google.com/vertex-ai/docs/ml-metadata/introduction)
+- [Pub Sub][https://cloud.google.com/pubsub/docs]
+- [Cloud Alerting](https://cloud.google.com/monitoring/alerts)
+- [Cloud Run Functions](https://cloud.google.com/functions/docs)
 - [Apache Beam](https://beam.apache.org/documentation/programming-guide/)
 - [Google DataFlow](https://cloud.google.com/dataflow)
 
@@ -211,7 +209,9 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
 
 ## Pipeline construction
 
-1. **Reading the Data**: Now we will go step by step to create a pipeline starting with reading the data. The data is read using **beam.io.ReadFromText()**. Here we will just read the input values and save it in a file. The output is stored in text file named simpleoutput.
+### 1. **Reading the Data**
+
+Now we will go step by step to create a pipeline starting with reading the data. The data is read using **beam.io.ReadFromText()**. Here we will just read the input values and save it in a file. The output is stored in text file named simpleoutput.
 
     ```python
         def run(argv=None, save_main_session=True):
@@ -1175,26 +1175,59 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
 
 https://github.com/user-attachments/assets/949eb305-1f9f-44bc-b010-7b9811e9c51f
 
-
-
+9. **Model Monitoring using Vertex AI**: To monitor prediction quality and detect drift in real-time, we use **Vertex AI Model Monitoring** on the deployed endpoint. This helps detect output drift or performance degradation based on predictions stored in **BigQuery**. The monitoring is configured to observe distribution changes over time.
 
 https://github.com/user-attachments/assets/b5ca4e5a-d826-4089-a6b4-ddb0e43a1913
 
-
-
-
+10. **Triggering Cloud Alerts on Threshold Breach**: Vertex AI Model Monitoring is connected to **Cloud Monitoring**, which is set up with custom alert policies. When thresholds for prediction drift are breached, **Cloud Alerting** triggers an incident, sending a message to a **Pub/Sub** topic for further automated action like retraining.
 
 https://github.com/user-attachments/assets/9910e724-92e2-4950-86a0-0e2bd6de07e1
 
+11. **Handling Alerts using Cloud Run Functions**: The **Pub/Sub** message is consumed by a **Cloud Run Function**, which initiates the retraining pipeline using **Vertex AI Pipelines**. The retraining is triggered based on the message received from the alert system.
+   
+      ```python
+        import base64
+        import json
+        from google.cloud import aiplatform
+        from google.cloud.aiplatform import PipelineJob
+        
+        PROJECT_ID = ""                     # <---CHANGE THIS
+        REGION = "asia-south1"                            # <---CHANGE THIS
+        PIPELINE_ROOT ="" # <---CHANGE THIS
+        
+        def subscribe(event, context):
+            # decode the event payload string
+            payload_message = base64.b64decode(event['data']).decode('utf-8')
+            # parse payload string into JSON object
+            payload_json = json.loads(payload_message)
+            # trigger pipeline run with payload
+            trigger_retraining(payload_json)
+        
+        def trigger_retraining(payload_json):
+            pipeline_spec_uri = "gs://<bucket>/training_pipeline.json"
+            
+            # Create a PipelineJob using the compiled pipeline from pipeline_spec_uri
+            aiplatform.init(
+                project=PROJECT_ID,
+                location=REGION,
+            )
+            
+            pipeline_job = PipelineJob(
+                display_name="retraining_pipeline_job",
+                template_path=pipeline_spec_uri,
+                pipeline_root=PIPELINE_ROOT
+                )
+            pipeline_job.run()
+      ```
+
+12. **Automated Model Retraining via Cloud Run Functions**: In this final step, **Cloud Run Functions** initiate a new training job by triggering the same or a different pipeline. This step closes the feedback loop, enabling **end-to-end automation of model monitoring and retraining** to maintain model accuracy over time.
 
 
 
 https://github.com/user-attachments/assets/e7e26fc3-ac67-4dfa-b0a3-bcba3069d17b
 
 
-
-
-9. **Delete Infrastructure (Optional)**: Please delete below mentioned services
+13. **Delete Infrastructure (Optional)**: Please delete below mentioned services
     
     - Workbench
     - Storage Bucket
@@ -1229,7 +1262,7 @@ To test the code we need to do the following:
     6. Create a table in GermanCredit dataset by the name GermanCreditTable-streaming. 
         Schema is present at the starting of ml-streaming-pipeline-endpoint.py
 
-    7. Create Pub Sub Topic by the name german_credit_data
+    7. Create Pub Sub Topic by the name german_credit_data and Model_Monitoring
     
     8. Install Apache Beam on the SDK using below command
     pip3 install apache_beam[gcp]
