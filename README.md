@@ -1192,7 +1192,8 @@ https://github.com/user-attachments/assets/949eb305-1f9f-44bc-b010-7b9811e9c51f
 ### 9. **Model Monitoring using Vertex AI**
 
 To monitor prediction quality and detect drift in real-time, we use **Vertex AI Model Monitoring** on the deployed endpoint. This helps detect output drift or performance degradation based on predictions stored in **BigQuery**. The monitoring is configured to observe distribution changes over time. Schema is as follows:
-    ```json
+
+    ```yaml
         {
         "featureFields": [
         {
