@@ -236,7 +236,9 @@ Now we will go step by step to create a pipeline starting with reading the data.
             run()
     ``` 
 
-2. **Create Batch Dataflow Job**: Now the we will be constructing the Dataflow job what will pull the data from GCS bucket and injest into Bigquery. The code for is it persent [here](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/batch-pipeline.py)
+### 2. **Create Batch Dataflow Job**
+
+Now the we will be constructing the Dataflow job what will pull the data from GCS bucket and injest into Bigquery. The code for is it persent [here](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/batch-pipeline.py)
    
     - ***Parsing the data***: After reading the input file we will split the data using split(). Data is segregated into different columns to be used in further steps. We will **ParDo()** to create a split function. The output of this step is present in SplitPardo text file.
 
@@ -365,7 +367,7 @@ Now we will go step by step to create a pipeline starting with reading the data.
             run()
     ```
 
-3. **Inserting Data in Bigquery**: Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
+4. **Inserting Data in Bigquery**: Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
 
     ```python
         import apache_beam as beam
