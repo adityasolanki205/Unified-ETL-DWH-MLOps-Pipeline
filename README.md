@@ -367,7 +367,7 @@ Now the we will be constructing the Dataflow job what will pull the data from GC
             run()
     ```
 
-### 4. **Inserting Data in Bigquery**
+### 3. **Inserting Data in Bigquery**
 
 Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
 
@@ -855,7 +855,7 @@ Now we will start reading data from Pub sub to start the pipeline. The data is r
                     run()
     ```
     
-### 7. **Create Streaming Dataflow Job**
+### 6. **Create Streaming Dataflow Job**
 
 Now the we will be constructing the Dataflow job what will pull the data from Pub/sub , perform ETL and pull inference from Vertex AI endpoint and injest into Bigquery. The code for is it persent [here](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/ml-streaming-pipeline-endpoint.py)
 
@@ -954,7 +954,7 @@ Now the we will be constructing the Dataflow job what will pull the data from Pu
             run()
     ```
     
-- **Lable Encoding Data**: After datatype coversion we will label encode the data to make it machine learning worthy .
+- **Lable Encoding Data**: After datatype coversion we will label encode the data to make it machine learning worthy
      
     ```python
         class ApplyLabelEncoding(beam.DoFn):
@@ -1057,7 +1057,7 @@ Now the we will be constructing the Dataflow job what will pull the data from Pu
             run()
     ```
     
-### 8. **Online Prediction using Vertex AI Endpoint**
+### 7. **Online Prediction using Vertex AI Endpoint**
 
 Now we will perform predictions from the machine learning model. If you wish to learn how this machine learning model was created, please visit this [repository](https://github.com/adityasolanki205/German-Credit). We will predict customer segment using endpoint created in Kubeflow.
 
@@ -1113,7 +1113,7 @@ Now we will perform predictions from the machine learning model. If you wish to 
             run()
     ```
 
-### 9. **Inserting Data in Bigquery**
+### 8. **Inserting Data in Bigquery**
 
 Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
 
@@ -1189,19 +1189,133 @@ Final step in the Pipeline it to insert the data in Bigquery. To do this we will
 
 https://github.com/user-attachments/assets/949eb305-1f9f-44bc-b010-7b9811e9c51f
 
-### 10. **Model Monitoring using Vertex AI**
+### 9. **Model Monitoring using Vertex AI**
 
-To monitor prediction quality and detect drift in real-time, we use **Vertex AI Model Monitoring** on the deployed endpoint. This helps detect output drift or performance degradation based on predictions stored in **BigQuery**. The monitoring is configured to observe distribution changes over time.
+To monitor prediction quality and detect drift in real-time, we use **Vertex AI Model Monitoring** on the deployed endpoint. This helps detect output drift or performance degradation based on predictions stored in **BigQuery**. The monitoring is configured to observe distribution changes over time. Schema is as follows:
+    ```txt
+        {
+        "featureFields": [
+        {
+          "name": "Existing_account",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Duration_month",
+          "dataType": "integer",
+          "repeated": false
+        },
+        {
+          "name": "Credit_history",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Purpose",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Credit_amount",
+          "dataType": "float",
+          "repeated": false
+        },
+        {
+          "name": "Saving",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Employment_duration",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Installment_rate",
+          "dataType": "integer",
+          "repeated": false
+        },
+        {
+          "name": "Personal_status",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Debtors",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Residential_Duration",
+          "dataType": "integer",
+          "repeated": false
+        },
+        {
+          "name": "Property",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Age",
+          "dataType": "integer",
+          "repeated": false
+        },
+        {
+          "name": "Installment_plans",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Housing",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Number_of_credits",
+          "dataType": "integer",
+          "repeated": false
+        },
+        {
+          "name": "Job",
+          "dataType": "string",
+          "repeated": false
+        },
+        {
+          "name": "Liable_People",
+          "dataType": "integer",
+          "repeated": false
+        },
+        {
+          "name": "Telephone",
+          "dataType": "integer",
+          "repeated": false
+        },
+        {
+          "name": "Foreign_worker",
+          "dataType": "integer",
+          "repeated": false
+        }
+        ],
+        "predictionFields": [
+        {
+          "name": "Classification",
+          "dataType": "integer",
+          "repeated": false
+        }
+        ],
+        "groundTruthFields": []
+        }
+    ```
 
 https://github.com/user-attachments/assets/b5ca4e5a-d826-4089-a6b4-ddb0e43a1913
 
-### 11. **Triggering Cloud Alerts on Threshold Breach**
+### 10. **Triggering Cloud Alerts on Threshold Breach**
 
 Vertex AI Model Monitoring is connected to **Cloud Monitoring**, which is set up with custom alert policies. When thresholds for prediction drift are breached, **Cloud Alerting** triggers an incident, sending a message to a **Pub/Sub** topic for further automated action like retraining.
 
 https://github.com/user-attachments/assets/9910e724-92e2-4950-86a0-0e2bd6de07e1
 
-### 12. **Handling Alerts using Cloud Run Functions**
+### 11. **Handling Alerts using Cloud Run Functions**
 
 The **Pub/Sub** message is consumed by a **Cloud Run Function**, which initiates the retraining pipeline using **Vertex AI Pipelines**. The retraining is triggered based on the message received from the alert system.
    
@@ -1240,7 +1354,7 @@ The **Pub/Sub** message is consumed by a **Cloud Run Function**, which initiates
             pipeline_job.run()
       ```
 
-### 13. **Automated Model Retraining via Cloud Run Functions**
+### 12. **Automated Model Retraining via Cloud Run Functions**
 
 In this final step, **Cloud Run Functions** initiate a new training job by triggering the same or a different pipeline. This step closes the feedback loop, enabling **end-to-end automation of model monitoring and retraining** to maintain model accuracy over time.
 
@@ -1248,7 +1362,7 @@ In this final step, **Cloud Run Functions** initiate a new training job by trigg
 https://github.com/user-attachments/assets/e7e26fc3-ac67-4dfa-b0a3-bcba3069d17b
 
 
-### 14. **Delete Infrastructure (Optional)**
+### 13. **Delete Infrastructure (Optional)**
 
 Please delete below mentioned services
     
@@ -1328,6 +1442,14 @@ To test the code we need to do the following:
     15. Open one more tab in cloud SDK and run below command 
     cd ML-Streaming-pipeline-using-Dataflow
     python3 publish_to_pubsub.py
+
+    16. Goto Model Monitoring and setup model monitoring for output drift detection
+
+    17. Create a Alerting policy for Model output drift deviation with threshold as 0.3 and select notification 
+    channel as model_monitoring topic in pub sub. 
+
+    18. Create a Cloud Run functions that listens for Pub Sub and triggers retraining pipeline. So when cloud alerting
+    triggers a message to Pub sub, Cloud Run Functions gets invoked and starts retraining.
 
 ## Credits
 1. Akash Nimare's [README.md](https://gist.github.com/akashnimare/7b065c12d9750578de8e705fb4771d2f#file-readme-md)
