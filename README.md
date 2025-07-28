@@ -1375,6 +1375,10 @@ Please delete below mentioned services
     - Delete the endpoint
     - Delete model from model registry
     - Delete data from Metadata management
+    - Delete Cloud Alert
+    - Delete Pub Sub Topics
+    - Delete Dataflow jobs
+    - Delete model monitoring
 
 
 https://github.com/user-attachments/assets/5b765fcd-16e9-42e8-a9cf-2baf134e9f07
