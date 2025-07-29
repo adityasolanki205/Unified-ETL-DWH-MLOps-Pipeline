@@ -213,28 +213,28 @@ https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
 
 Now we will go step by step to create a pipeline starting with reading the data. The data is read using **beam.io.ReadFromText()**. Here we will just read the input values and save it in a file. The output is stored in text file named simpleoutput.
 
-    ```python
-        def run(argv=None, save_main_session=True):
-            parser = argparse.ArgumentParser()
-            parser.add_argument(
-              '--input',
-              dest='input',
-              help='Input file to process')
-            parser.add_argument(
-              '--output',
-              dest='output',
-              default='../output/result.txt',
-              help='Output file to write results to.')
-            known_args, pipeline_args = parser.parse_known_args(argv)
-            options = PipelineOptions(pipeline_args)
-            with beam.Pipeline(options=PipelineOptions()) as p:
-                data = (p 
-                        | 'Read Data' >> beam.io.ReadFromText(known_args.input)
-                        | 'Filter Header' >> beam.Filter(lambda line: not line.startswith("Existing account"))
-                    ) 
-        if __name__ == '__main__':
-            run()
-    ``` 
+```python
+    def run(argv=None, save_main_session=True):
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+          '--input',
+          dest='input',
+          help='Input file to process')
+        parser.add_argument(
+          '--output',
+          dest='output',
+          default='../output/result.txt',
+          help='Output file to write results to.')
+        known_args, pipeline_args = parser.parse_known_args(argv)
+        options = PipelineOptions(pipeline_args)
+        with beam.Pipeline(options=PipelineOptions()) as p:
+            data = (p 
+                    | 'Read Data' >> beam.io.ReadFromText(known_args.input)
+                    | 'Filter Header' >> beam.Filter(lambda line: not line.startswith("Existing account"))
+                ) 
+    if __name__ == '__main__':
+        run()
+``` 
 
 ### 2. **Create Batch Dataflow Job**
 
@@ -371,63 +371,63 @@ Now the we will be constructing the Dataflow job what will pull the data from GC
 
 Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
 
-    ```python
-        import apache_beam as beam
-        from apache_beam.options.pipeline_options import PipelineOptions
-        import argparse
-        
-        SCHEMA = '
-                Existing_account:STRING,
-                Duration_month:INTEGER,
-                Credit_history:STRING,
-                Purpose:STRING,
-                Credit_amount:FLOAT,
-                Saving:STRING,
-                Employment_duration:STRING,
-                Installment_rate:INTEGER,
-                Personal_status:STRING,
-                Debtors:STRING,
-                Residential_Duration:INTEGER,
-                Property:STRING,
-                Age:INTEGER,
-                Installment_plans:STRING,
-                Housing:STRING,
-                Number_of_credits:INTEGER,
-                Job:STRING,
-                Liable_People:INTEGER,
-                Telephone:STRING,
-                Foreign_worker:STRING,
-                Classification:INTEGER
-                '
-        ...
-        def run(argv=None, save_main_session=True):
-            ...
-            parser.add_argument(
-              '--project',
-              dest='project',
-              help='Project used for this Pipeline')
-            ...
-            PROJECT_ID = known_args.project
-            with beam.Pipeline(options=PipelineOptions()) as p:
-                data = (p 
-                        | 'Read Data' >> beam.io.ReadFromText(known_args.input)
-                        | 'Filter Header' >> beam.Filter(lambda line: not line.startswith("Existing account"))
-                    )
-            parsed_data = (data 
-                         | 'Parsing Data' >> beam.ParDo(Split()))
-            filtered_data = (parsed_data
-                         | 'Filtering Data' >> beam.Filter(Filter_Data))
-            Cleaned_data = (filtered_data
-                         | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
-            output =( Cleaned_data      
-                         | 'Writing to bigquery' >> beam.io.WriteToBigQuery(
-                           '{0}:GermanCredit.GermanCreditTable'.format(PROJECT_ID),
-                           schema=SCHEMA,
-                           write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
+```python
+    import apache_beam as beam
+    from apache_beam.options.pipeline_options import PipelineOptions
+    import argparse
     
-        if __name__ == '__main__':
-            run()        
-    ```
+    SCHEMA = '
+            Existing_account:STRING,
+            Duration_month:INTEGER,
+            Credit_history:STRING,
+            Purpose:STRING,
+            Credit_amount:FLOAT,
+            Saving:STRING,
+            Employment_duration:STRING,
+            Installment_rate:INTEGER,
+            Personal_status:STRING,
+            Debtors:STRING,
+            Residential_Duration:INTEGER,
+            Property:STRING,
+            Age:INTEGER,
+            Installment_plans:STRING,
+            Housing:STRING,
+            Number_of_credits:INTEGER,
+            Job:STRING,
+            Liable_People:INTEGER,
+            Telephone:STRING,
+            Foreign_worker:STRING,
+            Classification:INTEGER
+            '
+    ...
+    def run(argv=None, save_main_session=True):
+        ...
+        parser.add_argument(
+          '--project',
+          dest='project',
+          help='Project used for this Pipeline')
+        ...
+        PROJECT_ID = known_args.project
+        with beam.Pipeline(options=PipelineOptions()) as p:
+            data = (p 
+                    | 'Read Data' >> beam.io.ReadFromText(known_args.input)
+                    | 'Filter Header' >> beam.Filter(lambda line: not line.startswith("Existing account"))
+                )
+        parsed_data = (data 
+                     | 'Parsing Data' >> beam.ParDo(Split()))
+        filtered_data = (parsed_data
+                     | 'Filtering Data' >> beam.Filter(Filter_Data))
+        Cleaned_data = (filtered_data
+                     | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
+        output =( Cleaned_data      
+                     | 'Writing to bigquery' >> beam.io.WriteToBigQuery(
+                       '{0}:GermanCredit.GermanCreditTable'.format(PROJECT_ID),
+                       schema=SCHEMA,
+                       write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
+
+    if __name__ == '__main__':
+        run()        
+```
 
 https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
 
@@ -821,39 +821,39 @@ https://github.com/user-attachments/assets/944b2b5d-cf57-4817-bfa7-87f4496b55d6
 
 Now we will start reading data from Pub sub to start the pipeline. The data is read using **beam.io.ReadFromPubSub()**. Here we will just read the input message by providing the TOPIC and the output is decoded which was encoded while generating the data. 
 
-    ```python
-        def run(argv=None, save_main_session=True):
-            parser = argparse.ArgumentParser()
-            parser.add_argument(
-                '--project',
-                dest='project',
-                help='Project used for this Pipeline')
-            parser.add_argument(
-                '--bucket_name', 
-                required=True, 
-                help='The name of the bucket')
-            parser.add_argument(
-                '--input_subscription',
-                help=('Input PubSub subscription of the form '
-                      '"projects/<PROJECT>/subscriptions/<SUBSCRIPTION>."'))
-            parser.add_argument(
-                '--input_topic',
-                help=('Input PubSub topic of the form '
-                      '"projects/<PROJECT>/topics/<TOPIC>".'))
-            known_args, pipeline_args = parser.parse_known_args(argv)
-            options = PipelineOptions(pipeline_args)
-            PROJECT_ID = known_args.project
-            TOPIC = known_args.input_topic
-            SUBSCRIPTION = known_args.input_subscription
-            with beam.Pipeline(options=PipelineOptions()) as p:
-                Encoded_data   = (p 
-                               | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
-                Data           = ( Encoded_data
-                              | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
-                                       ) 
-                if __name__ == '__main__':
-                    run()
-    ```
+```python
+    def run(argv=None, save_main_session=True):
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            '--project',
+            dest='project',
+            help='Project used for this Pipeline')
+        parser.add_argument(
+            '--bucket_name', 
+            required=True, 
+            help='The name of the bucket')
+        parser.add_argument(
+            '--input_subscription',
+            help=('Input PubSub subscription of the form '
+                  '"projects/<PROJECT>/subscriptions/<SUBSCRIPTION>."'))
+        parser.add_argument(
+            '--input_topic',
+            help=('Input PubSub topic of the form '
+                  '"projects/<PROJECT>/topics/<TOPIC>".'))
+        known_args, pipeline_args = parser.parse_known_args(argv)
+        options = PipelineOptions(pipeline_args)
+        PROJECT_ID = known_args.project
+        TOPIC = known_args.input_topic
+        SUBSCRIPTION = known_args.input_subscription
+        with beam.Pipeline(options=PipelineOptions()) as p:
+            Encoded_data   = (p 
+                           | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
+            Data           = ( Encoded_data
+                          | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
+                                   ) 
+            if __name__ == '__main__':
+                run()
+```
     
 ### 6. **Create Streaming Dataflow Job**
 
@@ -1061,130 +1061,131 @@ Now the we will be constructing the Dataflow job what will pull the data from Pu
 
 Now we will perform predictions from the machine learning model. If you wish to learn how this machine learning model was created, please visit this [repository](https://github.com/adityasolanki205/German-Credit). We will predict customer segment using endpoint created in Kubeflow.
 
-    ```python
-        ... 
-        def call_vertex_ai(data):
-             aiplatform.init(project='827249641444', location='asia-south1')
-             endpoints = aiplatform.Endpoint.list()
-             # Display endpoint info
-             for endpoint in endpoints:
-                 print(f"Resource Name: {endpoint.resource_name}")
-                 endpoint_created = endpoint.resource_name
-           
-             feature_order = ['Existing_account', 'Duration_month', 'Credit_history', 'Purpose',
-                          'Credit_amount', 'Saving', 'Employment_duration', 'Installment_rate',
-                          'Personal_status', 'Debtors', 'Residential_Duration', 'Property', 'Age',
-                          'Installment_plans', 'Housing', 'Number_of_credits', 'Job', 
-                          'Liable_People', 'Telephone', 'Foreign_worker']
-             endpoint = aiplatform.Endpoint(endpoint_name=endpoint_created)
-             features = [data[feature] for feature in feature_order]
-             response = endpoint.predict(
-                 instances=[features]
-             )
-           
-             prediction = response.predictions[0]
-             data['Classification'] = int(prediction)
-             return data
+
+```python
+    ... 
+    def call_vertex_ai(data):
+         aiplatform.init(project='827249641444', location='asia-south1')
+         endpoints = aiplatform.Endpoint.list()
+         # Display endpoint info
+         for endpoint in endpoints:
+             print(f"Resource Name: {endpoint.resource_name}")
+             endpoint_created = endpoint.resource_name
+       
+         feature_order = ['Existing_account', 'Duration_month', 'Credit_history', 'Purpose',
+                      'Credit_amount', 'Saving', 'Employment_duration', 'Installment_rate',
+                      'Personal_status', 'Debtors', 'Residential_Duration', 'Property', 'Age',
+                      'Installment_plans', 'Housing', 'Number_of_credits', 'Job', 
+                      'Liable_People', 'Telephone', 'Foreign_worker']
+         endpoint = aiplatform.Endpoint(endpoint_name=endpoint_created)
+         features = [data[feature] for feature in feature_order]
+         response = endpoint.predict(
+             instances=[features]
+         )
+       
+         prediction = response.predictions[0]
+         data['Classification'] = int(prediction)
+         return data
+    ...
+    def run(argv=None, save_main_session=True):
         ...
-        def run(argv=None, save_main_session=True):
-            ...
-            with beam.Pipeline(options=PipelineOptions()) as p:
-               Encoded_data   = (p 
-                       | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
-                Data           = ( Encoded_data
-                              | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
-                Parsed_data    = (Data 
-                               | 'Parsing Data' >> beam.ParDo(Split()))
-                filtered_data = (Parsed_data
-                             | 'Filtering Data' >> beam.Filter(Filter_Data))
-                Encoded_data = (filtered_data 
-                            | 'Label Encoding' >> beam.ParDo(ApplyLabelEncoding(
-                                bucket_name=known_args.bucket_name,
-                                encoder_folder="label_encoders",
-                                columns_to_encode=categorical_columns
-                            ))
-                        )
-                Converted_data = (Encoded_data
-                               | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
-                Prediction   = (Converted_data
-                                |'Get Inference' >> beam.Map(call_vertex_ai))
-                                 | 'Saving the output' >> beam.io.WriteToText(known_args.output))
-        if __name__ == '__main__':
-            run()
-    ```
+        with beam.Pipeline(options=PipelineOptions()) as p:
+           Encoded_data   = (p 
+                   | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
+            Data           = ( Encoded_data
+                          | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
+            Parsed_data    = (Data 
+                           | 'Parsing Data' >> beam.ParDo(Split()))
+            filtered_data = (Parsed_data
+                         | 'Filtering Data' >> beam.Filter(Filter_Data))
+            Encoded_data = (filtered_data 
+                        | 'Label Encoding' >> beam.ParDo(ApplyLabelEncoding(
+                            bucket_name=known_args.bucket_name,
+                            encoder_folder="label_encoders",
+                            columns_to_encode=categorical_columns
+                        ))
+                    )
+            Converted_data = (Encoded_data
+                           | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
+            Prediction   = (Converted_data
+                            |'Get Inference' >> beam.Map(call_vertex_ai))
+                             | 'Saving the output' >> beam.io.WriteToText(known_args.output))
+    if __name__ == '__main__':
+        run()
+```
 
 ### 8. **Inserting Data in Bigquery**
 
 Final step in the Pipeline it to insert the data in Bigquery. To do this we will use **beam.io.WriteToBigQuery()** which requires Project id and a Schema of the target table to save the data. 
 
-    ```python
-        import apache_beam as beam
-        from apache_beam.options.pipeline_options import PipelineOptions
-        import argparse
-        
-        SCHEMA =
-        '
-        Existing_account:STRING,
-        Duration_month:INTEGER,
-        Credit_history:STRING,
-        Purpose:STRING,
-        Credit_amount:FLOAT,
-        Saving:STRING,
-        Employment_duration:STRING,
-        Installment_rate:INTEGER,
-        Personal_status:STRING,
-        Debtors:STRING,
-        Residential_Duration:INTEGER,
-        Property:STRING,
-        Age:INTEGER,
-        Installment_plans:STRING,
-        Housing:STRING,
-        Number_of_credits:INTEGER,
-        Job:STRING,
-        Liable_People:INTEGER,
-        Telephone:STRING,
-        Foreign_worker:STRING,
-        Classification:INTEGER
-        '
-        ...
-        def run(argv=None, save_main_session=True):
-            ...
-            parser.add_argument(
-              '--project',
-              dest='project',
-              help='Project used for this Pipeline')
-            ...
-            PROJECT_ID = known_args.project
-            with beam.Pipeline(options=PipelineOptions()) as p:
-                Encoded_data   = (p 
-                           | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
-                Data           = ( Encoded_data
-                              | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
-                Parsed_data    = (Data 
-                               | 'Parsing Data' >> beam.ParDo(Split()))
-                filtered_data = (Parsed_data
-                             | 'Filtering Data' >> beam.Filter(Filter_Data))
-                Encoded_data = (filtered_data 
-                            | 'Label Encoding' >> beam.ParDo(ApplyLabelEncoding(
-                                bucket_name=known_args.bucket_name,
-                                encoder_folder="label_encoders",
-                                columns_to_encode=categorical_columns
-                            ))
-                        )
-                Converted_data = (Encoded_data
-                               | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
-                Prediction   = (Converted_data
-                                |'Get Inference' >> beam.Map(call_vertex_ai))
-                output         = ( Prediction      
-                               | 'Writing to bigquery' >> beam.io.WriteToBigQuery(
-                               '{0}:GermanCredit.GermanCreditTable'.format(PROJECT_ID),
-                               schema=SCHEMA,
-                               write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
-                              )
+```python
+    import apache_beam as beam
+    from apache_beam.options.pipeline_options import PipelineOptions
+    import argparse
     
-        if __name__ == '__main__':
-            run()        
-    ```
+    SCHEMA =
+    '
+    Existing_account:STRING,
+    Duration_month:INTEGER,
+    Credit_history:STRING,
+    Purpose:STRING,
+    Credit_amount:FLOAT,
+    Saving:STRING,
+    Employment_duration:STRING,
+    Installment_rate:INTEGER,
+    Personal_status:STRING,
+    Debtors:STRING,
+    Residential_Duration:INTEGER,
+    Property:STRING,
+    Age:INTEGER,
+    Installment_plans:STRING,
+    Housing:STRING,
+    Number_of_credits:INTEGER,
+    Job:STRING,
+    Liable_People:INTEGER,
+    Telephone:STRING,
+    Foreign_worker:STRING,
+    Classification:INTEGER
+    '
+    ...
+    def run(argv=None, save_main_session=True):
+        ...
+        parser.add_argument(
+          '--project',
+          dest='project',
+          help='Project used for this Pipeline')
+        ...
+        PROJECT_ID = known_args.project
+        with beam.Pipeline(options=PipelineOptions()) as p:
+            Encoded_data   = (p 
+                       | 'Read data' >> beam.io.ReadFromPubSub(topic=TOPIC).with_output_types(bytes) )
+            Data           = ( Encoded_data
+                          | 'Decode' >> beam.Map(lambda x: x.decode('utf-8') ) )
+            Parsed_data    = (Data 
+                           | 'Parsing Data' >> beam.ParDo(Split()))
+            filtered_data = (Parsed_data
+                         | 'Filtering Data' >> beam.Filter(Filter_Data))
+            Encoded_data = (filtered_data 
+                        | 'Label Encoding' >> beam.ParDo(ApplyLabelEncoding(
+                            bucket_name=known_args.bucket_name,
+                            encoder_folder="label_encoders",
+                            columns_to_encode=categorical_columns
+                        ))
+                    )
+            Converted_data = (Encoded_data
+                           | 'Convert Datatypes' >> beam.Map(Convert_Datatype))
+            Prediction   = (Converted_data
+                            |'Get Inference' >> beam.Map(call_vertex_ai))
+            output         = ( Prediction      
+                           | 'Writing to bigquery' >> beam.io.WriteToBigQuery(
+                           '{0}:GermanCredit.GermanCreditTable'.format(PROJECT_ID),
+                           schema=SCHEMA,
+                           write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND)
+                          )
+
+    if __name__ == '__main__':
+        run()        
+```
 
 
 https://github.com/user-attachments/assets/949eb305-1f9f-44bc-b010-7b9811e9c51f
@@ -1193,120 +1194,120 @@ https://github.com/user-attachments/assets/949eb305-1f9f-44bc-b010-7b9811e9c51f
 
 To monitor prediction quality and detect drift in real-time, we use **Vertex AI Model Monitoring** on the deployed endpoint. This helps detect output drift or performance degradation based on predictions stored in **BigQuery**. The monitoring is configured to observe distribution changes over time. Schema is as follows:
 
-    ```yaml
-        {
-        "featureFields": [
-        {
-          "name": "Existing_account",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Duration_month",
-          "dataType": "integer",
-          "repeated": false
-        },
-        {
-          "name": "Credit_history",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Purpose",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Credit_amount",
-          "dataType": "float",
-          "repeated": false
-        },
-        {
-          "name": "Saving",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Employment_duration",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Installment_rate",
-          "dataType": "integer",
-          "repeated": false
-        },
-        {
-          "name": "Personal_status",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Debtors",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Residential_Duration",
-          "dataType": "integer",
-          "repeated": false
-        },
-        {
-          "name": "Property",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Age",
-          "dataType": "integer",
-          "repeated": false
-        },
-        {
-          "name": "Installment_plans",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Housing",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Number_of_credits",
-          "dataType": "integer",
-          "repeated": false
-        },
-        {
-          "name": "Job",
-          "dataType": "string",
-          "repeated": false
-        },
-        {
-          "name": "Liable_People",
-          "dataType": "integer",
-          "repeated": false
-        },
-        {
-          "name": "Telephone",
-          "dataType": "integer",
-          "repeated": false
-        },
-        {
-          "name": "Foreign_worker",
-          "dataType": "integer",
-          "repeated": false
-        }
-        ],
-        "predictionFields": [
-        {
-          "name": "Classification",
-          "dataType": "integer",
-          "repeated": false
-        }
-        ],
-        "groundTruthFields": []
-        }
-    ```
+```yaml
+    {
+    "featureFields": [
+    {
+      "name": "Existing_account",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Duration_month",
+      "dataType": "integer",
+      "repeated": false
+    },
+    {
+      "name": "Credit_history",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Purpose",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Credit_amount",
+      "dataType": "float",
+      "repeated": false
+    },
+    {
+      "name": "Saving",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Employment_duration",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Installment_rate",
+      "dataType": "integer",
+      "repeated": false
+    },
+    {
+      "name": "Personal_status",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Debtors",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Residential_Duration",
+      "dataType": "integer",
+      "repeated": false
+    },
+    {
+      "name": "Property",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Age",
+      "dataType": "integer",
+      "repeated": false
+    },
+    {
+      "name": "Installment_plans",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Housing",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Number_of_credits",
+      "dataType": "integer",
+      "repeated": false
+    },
+    {
+      "name": "Job",
+      "dataType": "string",
+      "repeated": false
+    },
+    {
+      "name": "Liable_People",
+      "dataType": "integer",
+      "repeated": false
+    },
+    {
+      "name": "Telephone",
+      "dataType": "integer",
+      "repeated": false
+    },
+    {
+      "name": "Foreign_worker",
+      "dataType": "integer",
+      "repeated": false
+    }
+    ],
+    "predictionFields": [
+    {
+      "name": "Classification",
+      "dataType": "integer",
+      "repeated": false
+    }
+    ],
+    "groundTruthFields": []
+    }
+```
 
 https://github.com/user-attachments/assets/b5ca4e5a-d826-4089-a6b4-ddb0e43a1913
 
@@ -1320,40 +1321,40 @@ https://github.com/user-attachments/assets/9910e724-92e2-4950-86a0-0e2bd6de07e1
 
 The **Pub/Sub** message is consumed by a **Cloud Run Function**, which initiates the retraining pipeline using **Vertex AI Pipelines**. The retraining is triggered based on the message received from the alert system.
    
-      ```python
-        import base64
-        import json
-        from google.cloud import aiplatform
-        from google.cloud.aiplatform import PipelineJob
-        
-        PROJECT_ID = ""                     # <---CHANGE THIS
-        REGION = "asia-south1"                            # <---CHANGE THIS
-        PIPELINE_ROOT ="" # <---CHANGE THIS
-        
-        def subscribe(event, context):
-            # decode the event payload string
-            payload_message = base64.b64decode(event['data']).decode('utf-8')
-            # parse payload string into JSON object
-            payload_json = json.loads(payload_message)
-            # trigger pipeline run with payload
-            trigger_retraining(payload_json)
-        
-        def trigger_retraining(payload_json):
-            pipeline_spec_uri = "gs://<bucket>/training_pipeline.json"
-            
-            # Create a PipelineJob using the compiled pipeline from pipeline_spec_uri
-            aiplatform.init(
-                project=PROJECT_ID,
-                location=REGION,
-            )
-            
-            pipeline_job = PipelineJob(
-                display_name="retraining_pipeline_job",
-                template_path=pipeline_spec_uri,
-                pipeline_root=PIPELINE_ROOT
-                )
-            pipeline_job.run()
-      ```
+```python
+import base64
+import json
+from google.cloud import aiplatform
+from google.cloud.aiplatform import PipelineJob
+
+PROJECT_ID = ""                     # <---CHANGE THIS
+REGION = "asia-south1"                            # <---CHANGE THIS
+PIPELINE_ROOT ="" # <---CHANGE THIS
+
+def subscribe(event, context):
+    # decode the event payload string
+    payload_message = base64.b64decode(event['data']).decode('utf-8')
+    # parse payload string into JSON object
+    payload_json = json.loads(payload_message)
+    # trigger pipeline run with payload
+    trigger_retraining(payload_json)
+
+def trigger_retraining(payload_json):
+    pipeline_spec_uri = "gs://<bucket>/training_pipeline.json"
+    
+    # Create a PipelineJob using the compiled pipeline from pipeline_spec_uri
+    aiplatform.init(
+        project=PROJECT_ID,
+        location=REGION,
+    )
+    
+    pipeline_job = PipelineJob(
+        display_name="retraining_pipeline_job",
+        template_path=pipeline_spec_uri,
+        pipeline_root=PIPELINE_ROOT
+        )
+    pipeline_job.run()
+```
 
 ### 12. **Automated Model Retraining via Cloud Run Functions**
 
