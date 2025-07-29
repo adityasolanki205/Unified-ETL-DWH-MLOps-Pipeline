@@ -73,7 +73,7 @@ For the last few years, I have been part of a great learning curve wherein I hav
 - [Vertex AI Model Registry](https://cloud.google.com/vertex-ai/docs/model-registry/introduction)
 - [Vertex AI Online Prediction](https://cloud.google.com/vertex-ai/docs/predictions/get-predictions)
 - [Vertex AI Metadata](https://cloud.google.com/vertex-ai/docs/ml-metadata/introduction)
-- [Pub Sub][https://cloud.google.com/pubsub/docs]
+- [Pub Sub](https://cloud.google.com/pubsub/docs)
 - [Cloud Alerting](https://cloud.google.com/monitoring/alerts)
 - [Cloud Run Functions](https://cloud.google.com/functions/docs)
 - [Apache Beam](https://beam.apache.org/documentation/programming-guide/)
