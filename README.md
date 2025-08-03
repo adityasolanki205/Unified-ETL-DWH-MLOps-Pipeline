@@ -10,7 +10,7 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
 
 1. **Ingest Data from the source in batch format** 
     - Export historical customer data in CSV format and store it in **Google Cloud Storage (GCS)**.
-    - [Goto Code]((#1-reading-the-data))
+    - [Go to Code explanation](#1-reading-the-data)
       
 2. **Create and run a Batch Processing Dataflow ETL Job** [1]
     - Use **Apache Beam with Dataflow** to read, clean, and transform batch data.
