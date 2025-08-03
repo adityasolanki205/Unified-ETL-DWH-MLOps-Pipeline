@@ -15,9 +15,11 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
 2. **Create and run a Batch Processing Dataflow ETL Job** [1]
     - Use **Apache Beam with Dataflow** to read, clean, and transform batch data.
     - Ensure proper schema alignment and data quality checks
+    - [Go to Code Explanation](#2-create-batch-dataflow-job)
       
 3. **Load transformed data into BigQuery**
     - Write the cleaned and enriched data to a **BigQuery table** for downstream analytics and ML use
+    - [Go to Code Explanation](#3-inserting-data-in-bigquery)
       
 4. **Create and run Kubeflow pipeline** [2]
     - Develop a **Vertex AI Kubeflow pipeline** that:
@@ -26,31 +28,40 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
         - Performs Model training
         - Deploys it to a **Vertex AI Model Registry**
         - Creates Endpoints for online Prediction
+        - [Go to Code Explanation](#4-create-kubeflow-pipeline)
           
 5. **Ingest streaming Data from a the sources**
     - Enable real-time ingestion from a live customer data stream
+    - [Go to Code Explanation](#5-reading-data-from-pub-sub) 
       
 6. **Create and Run a Streaming Pipeline** [3]
     - Build a **Streaming Apache Beam pipeline** that reads, cleans and transforms input data.
+    - [Go to Code Explanation](#6-create-streaming-dataflow-job)
       
 7. **Perform online prediction using the deployed Vertex AI Endpoint**
     - Send transformed data to the deployed **ML model endpoint** for inference
+    - [Go to Code Explanation](#7-online-prediction-using-vertex-ai-endpoint)
       
 8. **Ingest output Data in Bigquery Table**
     - Store the prediction results in a **BigQuery table** for monitoring, analytics, or alerting.
+    - [Go to Code Explanation](#8-inserting-data-in-bigquery)
 
 9. **Monitor model predictions for drift or anomalies**
     - Analyze the prediction results stored in BigQuery for signs of data drift, class imbalance, or concept drift.
+    - [Go to Code Explanation](#9-model-monitoring-using-vertex-ai)
 
 10. **Trigger Cloud Alert on threshold breach**
     - When drift or anomaly is detected, create a alerting policy in **Cloud Alerting**.
+    - [Go to Code Explanation](#10-triggering-cloud-alerts-on-threshold-breach)
     
 11. **Create a log-based alert**
     - Threshold breach in **Cloud Alerting** triggers an incident and a message to **Pub Sub**.
     - The Message in **Pub sub** initiates a **Cloud Run Functions** service that start retraining pipeline.
+    - [Go to Code Explanation](#11-handling-alerts-using-cloud-run-functions)
    
-13. **Initiate automated retraining via Cloud Run Functions**
+12. **Initiate automated retraining via Cloud Run Functions**
     - The **Cloud Run Functions** starts the Vertex AI Pipeline to retrain the model.
+    - [Go to Code Explanation](#12-automated-model-retraining-via-cloud-run-functions)
 
 Reference:  
 [1]: [Batch Dataflow Pipeline](https://github.com/adityasolanki205/Batch-Processing-Pipeline-using-DataFlow)  
