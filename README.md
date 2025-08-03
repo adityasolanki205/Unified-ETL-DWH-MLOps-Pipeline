@@ -144,7 +144,7 @@ https://github.com/user-attachments/assets/76903e65-c08c-46f9-b86b-34de96268290
         google-cloud-bigquery-storage
         googleapis-common-protos
     ```
-
+    
     docker_build.sh
     ```bash
         FROM gcr.io/deeplearning-platform-release/base-cpu
@@ -160,6 +160,9 @@ https://github.com/user-attachments/assets/76903e65-c08c-46f9-b86b-34de96268290
     ```bash
        bash docker_build.sh
     ```
+### Code Files
+1. [Docker Code](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/docker_build.sh)
+2. [Requirements.txt](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/requirements.txt)
 
 https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
 
