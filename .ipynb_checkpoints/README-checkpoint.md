@@ -211,7 +211,7 @@ return log_line
 
 ```
 
-##### Related codes
+##### Related code
 1. [generating_data.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/generating_data.py)
 
 ## Pipeline construction
@@ -435,7 +435,7 @@ def run(argv=None, save_main_session=True):
 if __name__ == '__main__':
     run()        
 ```
-##### Related codes
+##### Related code
 1. [batch-pipeline.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/batch-pipeline.py)
 
 https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
