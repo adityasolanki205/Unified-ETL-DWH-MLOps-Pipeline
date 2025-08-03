@@ -110,7 +110,7 @@ Below are the steps to setup the enviroment and run the codes:
     - Click on create new and create a bucket with default setting in asia-south1 with the name 'demo-bucket-kfl'
     - Copy the file using 'gsutil cp german_data.csv gs://demo_bucket_kfl/'
 
-    #### 🎥 ***Demo Video***
+#### 🎥 ****Demo Video****
 https://github.com/user-attachments/assets/89739148-baa3-4d95-9371-b2bab4ae4ead
 
 3. **Creating a Artifact Registry**: We will now create a Repository for our Docker Image to be stored. Process is provded below.
@@ -119,7 +119,7 @@ https://github.com/user-attachments/assets/89739148-baa3-4d95-9371-b2bab4ae4ead
     - Click on create Repository, use default setting to create a Docker Repository in asia-south1 and the name
       'kubeflow-pipelines'
 
-    #### 🎥 ***Demo Video***
+#### 🎥 ***Demo Video***
 https://github.com/user-attachments/assets/76903e65-c08c-46f9-b86b-34de96268290
 
 4. **Creating the Docker Image**: After creating the repository we will create the docker Image for Kubeflow Components. This will also install all the required libraries:
@@ -1336,14 +1336,14 @@ To monitor prediction quality and detect drift in real-time, we use **Vertex AI 
 ##### Related code
 1. [model_monitoring_schema.txt](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/model_monitoring_schema.txt)
 
-    #### 🎥 ***Demo Video***
+#### 🎥 ***Demo Video***
 https://github.com/user-attachments/assets/b5ca4e5a-d826-4089-a6b4-ddb0e43a1913
 
 ### 10. **Triggering Cloud Alerts on Threshold Breach**
 
 Vertex AI Model Monitoring is connected to **Cloud Monitoring**, which is set up with custom alert policies. When thresholds for prediction drift are breached, **Cloud Alerting** triggers an incident, sending a message to a **Pub/Sub** topic for further automated action like retraining.
 
-   #### 🎥 ***Demo Video***
+#### 🎥 ***Demo Video***
 https://github.com/user-attachments/assets/9910e724-92e2-4950-86a0-0e2bd6de07e1
 
 ### 11. **Handling Alerts using Cloud Run Functions**
@@ -1392,7 +1392,7 @@ def trigger_retraining(payload_json):
 
 In this final step, **Cloud Run Functions** initiate a new training job by triggering the same or a different pipeline. This step closes the feedback loop, enabling **end-to-end automation of model monitoring and retraining** to maintain model accuracy over time.
 
-   #### 🎥 ***Demo Video***
+#### 🎥 ***Demo Video***
 https://github.com/user-attachments/assets/e7e26fc3-ac67-4dfa-b0a3-bcba3069d17b
 
 
@@ -1413,7 +1413,7 @@ Please delete below mentioned services
     - Delete Dataflow jobs
     - Delete model monitoring
 
-   #### 🎥 ***Demo Video***
+#### 🎥 ***Demo Video***
 https://github.com/user-attachments/assets/5b765fcd-16e9-42e8-a9cf-2baf134e9f07
 
 
