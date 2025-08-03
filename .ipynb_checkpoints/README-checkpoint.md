@@ -160,10 +160,10 @@ https://github.com/user-attachments/assets/76903e65-c08c-46f9-b86b-34de96268290
     ```bash
        bash docker_build.sh
     ```
-#### Related codes
-1. [dockerfile](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/Dockerfile)
-2. [requirements.txt](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/requirements.txt)
-3. [docker_build.sh](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/docker_build.sh)
+##### Related codes
+    1. [dockerfile](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/Dockerfile)
+    2. [requirements.txt](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/requirements.txt)
+    3. [docker_build.sh](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/docker_build.sh)
 
 https://github.com/user-attachments/assets/0ccded59-f2c7-4e1d-863b-c790e7eab21a
 
@@ -211,8 +211,8 @@ return log_line
 
 ```
 
-#### Related codes
-1. [generating_data.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/generating_data.py)
+##### Related codes
+    1. [generating_data.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/generating_data.py)
 
 ## Pipeline construction
 
@@ -435,8 +435,8 @@ def run(argv=None, save_main_session=True):
 if __name__ == '__main__':
     run()        
 ```
-#### Related codes
-1. [batch-pipeline.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/batch-pipeline.py)
+##### Related codes
+    1. [batch-pipeline.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/batch-pipeline.py)
 
 https://github.com/user-attachments/assets/fadb5172-8c24-40f9-aee0-190a2562d170
 
@@ -803,8 +803,8 @@ Now the real pipeline creating starts. Here will we will try to create pipeline 
         if __name__ == "__main__":
             compiler.Compiler().compile(pipeline_func=pipeline, package_path="training_pipeline.json")
     ```
-#### Related Code
-1. [training_pipeline.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/training_pipeline.py)
+##### Related Code
+    1. [training_pipeline.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/training_pipeline.py)
 
     
 - ***Running the Pipeline***: Now we simply have to run the pipeline. 
@@ -821,8 +821,8 @@ Now the real pipeline creating starts. Here will we will try to create pipeline 
             )
         pipeline_job.run()
     ```
-#### Related code
-1. [run_pipeline.ipynb](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/run_pipeline.ipynb)
+##### Related code
+    1. [run_pipeline.ipynb](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/run_pipeline.ipynb)
 
 https://github.com/user-attachments/assets/fb8a7cd2-2bd5-4127-8540-391058a45f8e
 
@@ -1202,9 +1202,9 @@ if __name__ == '__main__':
     run()        
 ```
 
-#### Related Code
-1. [ml-streaming-pipeline-endpoint.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/ml-streaming-pipeline-endpoint.py)
-2. [update_python.ipynb](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/update_python.ipynb)
+##### Related Code
+    1. [ml-streaming-pipeline-endpoint.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/ml-streaming-pipeline-endpoint.py)
+    2. [update_python.ipynb](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/update_python.ipynb)
 
 https://github.com/user-attachments/assets/949eb305-1f9f-44bc-b010-7b9811e9c51f
 
@@ -1326,8 +1326,8 @@ To monitor prediction quality and detect drift in real-time, we use **Vertex AI 
 "groundTruthFields": []
 }
 ```
-#### Related code
-1. [model_monitoring_schema.txt](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/model_monitoring_schema.txt)
+##### Related code
+    1. [model_monitoring_schema.txt](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/model_monitoring_schema.txt)
    
 https://github.com/user-attachments/assets/b5ca4e5a-d826-4089-a6b4-ddb0e43a1913
 
@@ -1375,9 +1375,9 @@ def trigger_retraining(payload_json):
         )
     pipeline_job.run()
 ```
-#### Related Code
-1. [trigger_retraining.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/trigger_retraining.py)
-2. [cloud_run_requirement.txt](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/cloud_run_requirement.txt)
+##### Related Code
+    1. [trigger_retraining.py](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/trigger_retraining.py)
+    2. [cloud_run_requirement.txt](https://github.com/adityasolanki205/Unified-ETL-DWH-MLOps-Pipeline/blob/main/cloud_run_requirement.txt)
 
 ### 12. **Automated Model Retraining via Cloud Run Functions**
 
