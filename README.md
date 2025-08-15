@@ -1,5 +1,5 @@
 # Unified ETL Data warehousing MLops Pipeline
-This repository is part of an **MLOps workflow**, showcasing a complete pipeline that integrates **data engineering** and **machine learning** for real-time **credit risk prediction** (assumed.
+This repository is part of an **MLOps workflow**, showcasing a complete pipeline that integrates **data engineering** and **machine learning** for real-time **credit risk prediction**
 
 You'll learn key concepts like **data ingestion**, **ETL (Extract, Transform, Load)**, **data warehousing**, **ML model deployment**, and **online prediction** using **Kubeflow** and various **GCP services**.
 
