@@ -62,11 +62,11 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
     - The **Cloud Run Functions** starts the Vertex AI Pipeline to retrain the model.
     - [Go to Code Explanation](#12-automated-model-retraining-via-cloud-run-functions)
 
-**Optional: Infrastructure Setup with Terraform**
+***Optional: Infrastructure Setup using Terraform***
 
-If you don’t already have the required GCP infrastructure (buckets, Pub/Sub topics, BigQuery datasets, Artifact Registry, Vertex AI Workbench, Cloud Functions, etc.), you can provision it automatically using my Terraform repository:
+If you want to create reproducable infrastructure of the required GCP components (buckets, Pub/Sub topics, BigQuery datasets, Artifact Registry, Vertex AI Workbench, Cloud Functions, etc.), you can provision it automatically using my Terraform repository:
 
-[GCP Infra for Data & AI using Terraform](https://github.com/adityasolanki205/GCP-Infra-for-Data-AI-using-Terraform)
+**[GCP Infra for Data & AI using Terraform](https://github.com/adityasolanki205/GCP-Infra-for-Data-AI-using-Terraform)**
 
 This step is **optional**.  
 - If you already have your infrastructure set up, you can skip this.  
