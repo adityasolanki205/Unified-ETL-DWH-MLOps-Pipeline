@@ -1,12 +1,11 @@
 # Unified ETL Data warehousing MLops Pipeline
-This repository is part of an **MLOps workflow**, showcasing a complete pipeline that integrates **data engineering** and **machine learning** for real-time **credit risk prediction** (assumed.
+This repository is part of an **MLOps workflow**, showcasing a complete pipeline that integrates **data engineering** and **machine learning** for real-time **credit risk prediction**
 
 You'll learn key concepts like **data ingestion**, **ETL (Extract, Transform, Load)**, **data warehousing**, **ML model deployment**, and **online prediction** using **Kubeflow** and various **GCP services**.
 
 We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-credit) and simulate a **streaming data source** that emits customer details in real time. The pipeline is designed to predict customer credit risk, covering the full lifecycle — from batch ingestion and processing, to model training, deployment, and online inference—detailed in the architecture diagram below.
 
-![ML Ops Architecture Updated](https://github.com/user-attachments/assets/dfc49f37-c91b-4edf-9d0b-3f7391426ddb)
-
+![ML Ops Architecture Updated](https://github.com/user-attachments/assets/d6b79fb6-f4e0-4ef2-8025-b416da27da17)
 
 1. **Ingest Data from the source in batch format** 
     - Export historical customer data in CSV format and store it in **Google Cloud Storage (GCS)**.
@@ -1326,12 +1325,12 @@ To monitor prediction quality and detect drift in real-time, we use **Vertex AI 
 },
 {
   "name": "Telephone",
-  "dataType": "integer",
+  "dataType": "string",
   "repeated": false
 },
 {
   "name": "Foreign_worker",
-  "dataType": "integer",
+  "dataType": "string",
   "repeated": false
 }
 ],

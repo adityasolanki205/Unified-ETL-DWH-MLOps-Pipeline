@@ -1325,12 +1325,12 @@ To monitor prediction quality and detect drift in real-time, we use **Vertex AI 
 },
 {
   "name": "Telephone",
-  "dataType": "integer",
+  "dataType": "string",
   "repeated": false
 },
 {
   "name": "Foreign_worker",
-  "dataType": "integer",
+  "dataType": "string",
   "repeated": false
 }
 ],
