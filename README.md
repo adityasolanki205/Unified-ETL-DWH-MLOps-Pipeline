@@ -64,7 +64,7 @@ We use the [German Credit Risk dataset](https://www.kaggle.com/uciml/german-cred
 
 ***Optional: Infrastructure Setup using Terraform***
 
-If you want to create reproducable infrastructure of the required GCP components (buckets, Pub/Sub topics, BigQuery datasets, Artifact Registry, Vertex AI Workbench, Cloud Functions, etc.), you can provision it automatically using my Terraform repository:
+If you want to set up reproducible infrastructure for the required GCP components (buckets, Pub/Sub topics, BigQuery datasets, Artifact Registry, Vertex AI Workbench, Cloud Functions, etc.), you can provision it automatically using my Terraform repository:
 
 **[GCP Infra for Data & AI using Terraform](https://github.com/adityasolanki205/GCP-Infra-for-Data-AI-using-Terraform)**
 
